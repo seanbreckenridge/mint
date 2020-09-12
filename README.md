@@ -1,4 +1,4 @@
-## my-mintable
+## mint
 
 Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/)
 

@@ -1,4 +1,4 @@
-mintable.jsonc
+*.jsonc
 /data/
 tags*
 *.pdf

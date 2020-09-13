@@ -41,6 +41,7 @@ readonly DATA_DIR="${THIS_DIR}/data"              # where transactions/balances 
 # mint with config
 mintc() {
 	mintable "$@" --config-file "$CONFIG_FILE"
+	return $?
 }
 
 prompt() {
@@ -72,9 +73,13 @@ commit_data_changes() {
 	if cd "$DATA_DIR"; then
 		# add any changes to a local git repo
 		git add ./*.csv
-		git commit -m "transaction updates" || echo "No changes detected in data directory..."
+		git commit -m "transaction updates" || {
+			echo "No changes detected in data directory..."
+			return $?
+		}
 	else
-		echo "Couldn't move into ${DATA_DIR}!" 1>&2 || return $?
+		echo "Couldn't move into ${DATA_DIR}!" 1>&2
+		return 1
 	fi
 }
 
@@ -82,9 +87,15 @@ CMD="${1:?No command provided! Provide either \'setup\' or \'fetch\', or some ot
 case "$CMD" in
 setup)
 	command -v mintable >/dev/null 2>&1 || npm install -g mintable
-	prompt "Setup plaid authentication tokens?" && mintc plaid-setup
-	prompt "Setup CSV export?" && mintc csv-export-setup
-	prompt "Setup bank accounts?" && mintc account-setup
+	prompt "Setup plaid authentication tokens?" && {
+		mintc plaid-setup || exit $?
+	}
+	prompt "Setup CSV export?" && {
+		mintc csv-export-setup || exit $?
+	}
+	prompt "Setup bank accounts?" && {
+		mintc account-setup || exit $?
+	}
 	figlet -f script 'done!'
 	;;
 
@@ -92,11 +103,11 @@ fetch)
 	shift
 	mintc fetch "$@" &&
 		setup_data_version_control &&
-		commit_data_changes
+		commit_data_changes || exit $?
 	;;
 *)
 	printf "Couldn't find a command named '%s'\n" "$1" 1>&2
 	echo "Trying to run it with mintable..."
-	mintc "$@"
+	mintc "$@" || exit $?
 	;;
 esac

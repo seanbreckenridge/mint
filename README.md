@@ -30,13 +30,16 @@ The amount of specific data cleaning/personal usage means that this isn't really
 ### Status
 
 Currently this:
-  - parses all of the data from mintable
-  - can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
-  - loads all the balance snapshots/transactions into memory and drops you into IPython
+
+- parses all of the data from mintable
+- can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
+- loads all the balance snapshots/transactions into memory and drops you into IPython
+
 Need to:
- - create code to track budget
- - clean up transaction data; both the name of transactions and do some wrangling on transaction category
- - create a Jupyter notebook and visualize this information
+
+- create code to track budget
+- clean up transaction data; both the name of transactions and do some wrangling on transaction category
+- create a Jupyter notebook and visualize this information
 
 ---
 

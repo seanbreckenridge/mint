@@ -73,7 +73,7 @@ def get_contents_at_commit(commit: git.Commit) -> Optional[Snapshot]:
 def unique_snapshots(snapshots: Iterable[Snapshot]) -> Iterator[Account]:
     # remove snapshots which have the same account data but at different times
     emitted: Set[Tuple[Account]] = set()
-    for snap in snapshots:
+    for snap in sorted(snapshots, key=lambda s: s.at):
         key = tuple(snap.accounts)
         if key not in emitted:
             emitted.add(key)

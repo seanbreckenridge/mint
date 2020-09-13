@@ -6,6 +6,8 @@ Requires:
  - `mintable` (`npm install -g mintable`)
  - `whiptail` (typically installable as `newt` or `libnewt`)
  - `figlet`
+ - `bash` 4.0+
+ - `python` 3.7+
 
 I use [plaid](http://plaid.com/) to get the account information, and export those to local CSV files.
 

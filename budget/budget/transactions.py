@@ -8,23 +8,23 @@ from dataclasses import dataclass
 @dataclass
 class Transaction:
     on: date
-    amount: float
-    name: str
-    account: str
-    category: str
+    amount: float  # positive is spending, negative is gaining/deposit
+    name: str  # name of transaction/company
+    account: str  # name of account this is related to
+    category: str  # food, transfer, insurance
 
 
 def read_transactions(ddir: Path) -> Iterator[Transaction]:
-    with (ddir / "transactions.csv").open() as tr:
+    with (ddir / "transactions.csv").open(newline="") as tr:
         cr = csv.reader(tr)
         next(cr)  # ignore headers
         for td in cr:
             yield parse_transaction(td)
     old_transactions = ddir / "old_transactions.csv"
     if old_transactions.exists():
-        # old_transactions file doesnt have a header, same format as regular transactions
-        with old_transactions.open() as tr:
+        with old_transactions.open(newline="") as tr:
             cr = csv.reader(tr)
+            next(cr)  # ignore headers
             for td in cr:
                 yield parse_transaction(td)
 

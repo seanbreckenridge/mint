@@ -8,7 +8,7 @@ from pathlib import Path
 from datetime import datetime
 
 from dataclasses import dataclass
-from typing import NamedTuple, Optional, List, Iterator, Type, Any, Set, Iterable
+from typing import Optional, List, Iterator, Type, Any, Set, Iterable, Tuple
 
 import git
 from more_itertools import strip
@@ -28,7 +28,8 @@ class Account:
         return hash(self.institution + self.account_type + str(self.current))
 
 
-class Snapshot(NamedTuple):
+@dataclass
+class Snapshot:
     accounts: List[Account]
     at: datetime
 
@@ -41,32 +42,47 @@ def none_if_empty(s: str, to_type: Type = str) -> Optional[Any]:
         return to_type(ss)
 
 
+def parse_float_or_zero(s: str) -> float:
+    try:
+        return float(s.strip())
+    except ValueError:
+        return 0
+
+
 BALANCES = "balances.csv"
+# manually logged accounts/cash on hand, using budget.manual
+MANUAL_BALANCES = "manual_balances.csv"
+
+
+def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Account]:
+    try:
+        blob = commit.tree / filename
+    except KeyError:
+        return
+    with io.BytesIO(blob.data_stream.read()) as f:
+        balances_str = f.read().decode("utf-8")
+    bcsv = csv.reader(io.StringIO(balances_str))
+    next(bcsv)  # ignore header row
+    for r in bcsv:
+        yield Account(
+            institution=r[0],
+            account=none_if_empty(r[1]),
+            account_type=r[2],
+            current=float(r[3]),
+            available=parse_float_or_zero(r[4]),
+            limit=parse_float_or_zero(r[5]),
+            currency="USD" if r[6] is None else r[6],
+        )
 
 
 def get_contents_at_commit(commit: git.Commit) -> Optional[Snapshot]:
-    try:
-        blob = commit.tree / BALANCES
-    except KeyError:
-        return None
     account_data: List[Account] = []
-    with io.BytesIO(blob.data_stream.read()) as f:
-        balances_str = f.read().decode("utf-8")
-    buffer = io.StringIO(balances_str)
-    bcsv = csv.reader(buffer)
-    next(bcsv)  # ignore header row
-    for r in bcsv:
-        account_data.append(
-            Account(
-                institution=r[0],
-                account=none_if_empty(r[1]),
-                account_type=r[2],
-                current=float(r[3]),
-                available=none_if_empty(r[4], float),
-                limit=none_if_empty(r[5], float),
-                currency="USD" if r[6] is None else r[6],
-            )
-        )
+    # read the balance/manual balance files for this snapshot
+    for bfile in (BALANCES, MANUAL_BALANCES):
+        for acc in get_accounts_at_commit(commit, bfile):
+            account_data.append(acc)
+    if len(account_data) == 0:
+        return None
     return Snapshot(accounts=account_data, at=commit.authored_datetime)
 
 

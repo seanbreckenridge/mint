@@ -39,6 +39,6 @@ python3 -m budget ../data
 To my aliases file, I add:
 
 ```shell
-alias 'budget=python3 -m budget ~/Repos/mint/data'
+alias 'budget=python3 -m budget "${HOME}/Repos/mint/data"'
 ```
 

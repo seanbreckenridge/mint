@@ -75,7 +75,6 @@ commit_data_changes() {
 		git add ./*.csv
 		git commit -m "transaction updates" || {
 			echo "No changes detected in data directory..."
-			return $?
 		}
 	else
 		echo "Couldn't move into ${DATA_DIR}!" 1>&2

@@ -9,7 +9,7 @@ setup(
     url='https://github.com/seanbreckenridge/mint',
     author='Sean Breckenridge',
     author_email='seanbrecke@gmail.com',
-    description=('''code to interact with mintable exports'''),
+    description=('''code to interact with/visualize mintable exports'''),
     license='MIT',
     packages=find_packages(include=['budget']),
     install_requires=requirements,

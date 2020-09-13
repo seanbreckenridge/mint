@@ -16,6 +16,8 @@ def main(datadir: str):
     balance_history: List[Snapshot] = list(generate_account_history(ddir))
     transactions: List[Transaction] = list(read_transactions(ddir))
 
+    click.secho("use 'balance_history' and 'transactions'", fg='green')
+
     import IPython
 
     IPython.embed()

@@ -21,3 +21,6 @@ def main(datadir: str):
     import IPython
 
     IPython.embed()
+
+if __name__ == "__main__":
+    main()

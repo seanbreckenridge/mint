@@ -2,7 +2,10 @@
 
 Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/)
 
-Requires `mintable`, `figlet` and `whiptail`.
+Requires:
+ - `mintable` (`npm install -g mintable`)
+ - `whiptail` (typically installable as `newt` or `libnewt`)
+ - `figlet`
 
 I use [plaid](http://plaid.com/) to get the account information, and export those to local CSV files.
 

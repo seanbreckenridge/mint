@@ -23,7 +23,7 @@ After `./mint fetch`, if the `./data` directory has untracked changes, it adds i
 
 `budget` contains python to read/process the transactions. It uses the `git` history to create snapshots of the account balances, so all changes to any of my accounts are timestamped and I can look at balance over time.
 
-The amount of specific data cleaning/personal usage means that this isn't really generalizable into a budgeting system that anyone can use, but I split private/public parts into optional importable modules. If anyone wants to use this, would require you to edit the python to fit your needs.
+This isn't a drop-in replacement for some general budgeting system, it has the features that I want. I split private/public parts into optional importable modules, but, If anyone wants to use this, would probably require you to edit the python to fit your needs.
 
 ---
 

@@ -19,4 +19,17 @@ After `./mint fetch`, if the `./data` directory has untracked changes, it adds i
 
 ---
 
-TODO: add code to analyze/read in the data.
+`budget` contains python to read/process the transactions. It uses the `git` history to create snapshots of the account data so all changes to any of my accounts are timestamped.
+
+Currently, all it does is parse the balance/transaction CSV files into ADTs and drops me into an `IPython` shell.
+
+Plan is to do some more data cleaning/jupyter visualization and make some graphs.
+
+To install as an editable package (so changes to the code immediately update):
+
+```
+git clone https://github.com/seanbreckenridge/mint && cd ./mint
+cd ./budget
+pip install -e .
+budget ../data
+```

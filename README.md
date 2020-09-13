@@ -2,6 +2,8 @@
 
 Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/)
 
+Requires `mintable`, `figlet` and `whiptail`.
+
 I use [plaid](http://plaid.com/) to get the account information, and export those to local CSV files.
 
 `./mint setup` prompts me to setup any accounts, and sets up a git-tracked `./data` directory for my account balances/transactions.

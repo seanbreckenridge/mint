@@ -1,6 +1,37 @@
 #!/bin/bash
 # setup/interact with accounts, fetch data and keep it tracked in git
 
+# Function to test if a command is on the users $PATH
+# i.e. if they have a binary/script installed
+havecmd() {
+	if command -v "$1" >/dev/null 2>&1; then
+		return 0
+	else
+		printf "Requires '%s', could not find that on your \$PATH\n" "$1" >&2
+		return 1
+	fi
+}
+
+# check commands
+set -e
+havecmd whiptail
+havecmd figlet
+havecmd tput
+set +e
+
+# get columns
+declare TERMINAL_COLUMNS
+TERMINAL_COLUMNS="${COLUMNS:-$(tput cols)}"
+
+# setup whiptail colors; dark mode
+declare -rx NEWT_COLORS='
+root=black,black
+window=,black
+border=white,black
+textbox=white,black
+button=black,brightred
+'
+
 THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 readonly CONFIG_FILE="${THIS_DIR}/mintable.jsonc" # config file is kept in this dir
 readonly DATA_DIR="${THIS_DIR}/data"              # where transactions/balances are kept
@@ -13,16 +44,13 @@ mintc() {
 }
 
 prompt() {
-	echo -en "${1} (N/y) > "
-	read -r
-	case "$REPLY" in
-	y | Y)
-		return 0
-		;;
-	*)
-		return 1
-		;;
-	esac
+	local width
+	# use width of message
+	width="$(wc -c <<<"$1")"
+	# or default to 1/3rd of the terminal width
+	((width < TERMINAL_COLUMNS / 3)) && width="$((TERMINAL_COLUMNS / 3))"
+	whiptail --yesno --defaultno "$1" 8 "$width"
+	return $?
 }
 
 setup_data_version_control() {
@@ -56,8 +84,8 @@ setup)
 	command -v mintable >/dev/null 2>&1 || npm install -g mintable
 	prompt "Setup plaid authentication tokens?" && mintc plaid-setup
 	prompt "Setup CSV export?" && mintc csv-export-setup
-	prompt "Setup bank/investment accounts?" && mintc account-setup
-	echo "Done with setup!"
+	prompt "Setup bank accounts?" && mintc account-setup
+	figlet -f script 'done!'
 	;;
 
 fetch)

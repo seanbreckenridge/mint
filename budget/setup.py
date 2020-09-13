@@ -14,7 +14,6 @@ setup(
     packages=find_packages(include=['budget']),
     install_requires=requirements,
     keywords='reddit data',
-    entry_points={"console_scripts": ["budget = budget.__main__:main"]},
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',

@@ -31,5 +31,12 @@ To install as an editable package (so changes to the code immediately update):
 git clone https://github.com/seanbreckenridge/mint && cd ./mint
 cd ./budget
 pip install -e .
-budget ../data
+python3 -m budget ../data
 ```
+
+To my aliases file, I add:
+
+```shell
+alias 'budget=python3 -m budget ~/Repos/mint/data'
+```
+

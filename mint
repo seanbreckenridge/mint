@@ -78,7 +78,7 @@ commit_data_changes() {
 	fi
 }
 
-CMD="${1:?No command provided! Provide either setup or fetch, or some other undlerying 'mintable' command}"
+CMD="${1:?No command provided! Provide either \'setup\' or \'fetch\', or some other undlerying \'mintable\' command}"
 case "$CMD" in
 setup)
 	command -v mintable >/dev/null 2>&1 || npm install -g mintable

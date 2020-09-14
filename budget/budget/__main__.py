@@ -5,7 +5,7 @@ import click
 
 from typing import List
 
-from .load.transactions import Transaction, read_transactions
+from .load.transactions import Transaction, read_transactions, remove_duplicate_transactions
 from .load.balances import generate_account_history, Snapshot
 
 from .cleandata.accounts import clean_data
@@ -39,6 +39,9 @@ def main(datadir: str, edit_manual: bool):
 
     # transform transaction description/categories
     transactions = list(transform(transactions))
+
+    # remove duplicates
+    transactions = list(remove_duplicate_transactions(transactions))
 
     click.secho("use 'balance_snapshots' and 'transactions'", fg="green")
 

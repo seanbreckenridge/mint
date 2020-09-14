@@ -62,7 +62,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "amazon" in desc(t),
+        "amazon" in desc(t) or "amzn mktp" in desc(t),
         lambda: (setattr(t, "name", "Amazon"), setattr(t, "category", "Shopping"), t),
     )
     yield lambda t: (
@@ -82,10 +82,26 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
+        "subway" in desc(t),
+        lambda: (
+            setattr(t, "name", "Subway"),
+            setattr(t, "category", "Fast Food"),
+            t,
+        ),
+    )
+    yield lambda t: (
         "walgreen" in desc(t),
         lambda: (
             setattr(t, "name", "Walgreens"),
             setattr(t, "category", "Pharmacy"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "peets" in desc(t),
+        lambda: (
+            setattr(t, "name", "Peets Coffee"),
+            setattr(t, "category", "Coffee Shops"),
             t,
         ),
     )

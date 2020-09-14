@@ -1,7 +1,7 @@
 import csv
 from datetime import date
 from pathlib import Path
-from typing import List, Iterator
+from typing import List, Iterator, Iterable
 from dataclasses import dataclass
 
 
@@ -37,3 +37,15 @@ def parse_transaction(td: List[str]) -> Transaction:
         account=td[3],
         category=td[4],
     )
+
+
+def remove_duplicate_transactions(transactions: Iterable[Transaction]) -> Iterator[Transaction]:
+    emitted: Set[Tuple[datetime, float, str]] = set()
+    for tr in sorted(transactions, key=lambda t: t.on):
+        key = (tr.on, tr.amount, tr.name)
+        if key not in emitted:
+            emitted.add(key)
+            yield tr
+        else:
+            pass
+            #print("removing transaction {}".format(tr))

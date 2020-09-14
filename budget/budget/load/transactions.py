@@ -39,7 +39,9 @@ def parse_transaction(td: List[str]) -> Transaction:
     )
 
 
-def remove_duplicate_transactions(transactions: Iterable[Transaction]) -> Iterator[Transaction]:
+def debug_duplicate_transactions(
+    transactions: Iterable[Transaction],
+) -> Iterator[Transaction]:
     emitted: Set[Tuple[datetime, float, str]] = set()
     for tr in sorted(transactions, key=lambda t: t.on):
         key = (tr.on, tr.amount, tr.name)
@@ -47,5 +49,4 @@ def remove_duplicate_transactions(transactions: Iterable[Transaction]) -> Iterat
             emitted.add(key)
             yield tr
         else:
-            pass
-            #print("removing transaction {}".format(tr))
+            print("removing transaction {}".format(tr))

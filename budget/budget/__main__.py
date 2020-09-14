@@ -3,18 +3,16 @@ from pathlib import Path
 import sys
 import click
 
-from typing import List
 
-from .load.transactions import (
-    Transaction,
-    read_transactions,
-)  # , debug_duplicate_transactions
-from .load.balances import generate_account_history, Snapshot
-
-from .cleandata.accounts import clean_data
-from .cleandata.transactions.transform import transform_all as transform
-
+from . import data
 from .manual import edit_manual_balances
+
+
+def run_repl(balance_snapshots, transactions):
+    click.secho("use 'balance_snapshots' and 'transactions'", fg="green")
+    import IPython
+
+    IPython.embed()
 
 
 @click.command()
@@ -25,7 +23,8 @@ from .manual import edit_manual_balances
     default=False,
     help="Edit the manual_balances.csv file",
 )
-def main(datadir: str, edit_manual: bool):
+@click.option("--repl", is_flag=True, default=False, help="Use data in an IPython REPL")
+def main(datadir: str, edit_manual: bool, repl: bool):
     ddir = Path(datadir).absolute()
     assert ddir.is_dir() and ddir.exists()
 
@@ -33,24 +32,11 @@ def main(datadir: str, edit_manual: bool):
         edit_manual_balances(ddir / "manual_balances.csv")
         sys.exit(0)
 
-    # load in data
-    balance_snapshots: List[Snapshot] = list(generate_account_history(ddir))
-    transactions: List[Transaction] = list(read_transactions(ddir))
+    balance_snapshots, transactions = data(ddir)
 
-    # clean data
-    balance_snapshots, transactions = clean_data(balance_snapshots, transactions)
-
-    # transform transaction description/categories
-    transactions = list(transform(transactions))
-
-    # debug duplicates
-    # transactions = list(debug_duplicate_transactions(transactions))
-
-    click.secho("use 'balance_snapshots' and 'transactions'", fg="green")
-
-    import IPython
-
-    IPython.embed()
+    if repl:
+        run_repl(balance_snapshots, transactions)
+        sys.exit(0)
 
 
 if __name__ == "__main__":

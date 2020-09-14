@@ -1,3 +1,5 @@
+import warnings
+
 from functools import lru_cache
 from typing import Iterator, List, Optional
 
@@ -8,6 +10,7 @@ try:
     # which has custom_maps to convert transactions
     from .maps_conf import custom_maps
 except ImportError:
+    warnings.warn("Could not import maps_conf.py")
     custom_maps = lambda: []
 
 
@@ -88,7 +91,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "mcdonalds" in desc(t).replace("'", ''),
+        "mcdonalds" in desc(t).replace("'", ""),
         lambda: (
             setattr(t, "name", "McDonalds"),
             setattr(t, "category", "Fast Food"),
@@ -96,7 +99,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        desc(t).replace("'", '').startswith('dennys'),
+        desc(t).replace("'", "").startswith("dennys"),
         lambda: (
             setattr(t, "name", "Denny's"),
             setattr(t, "category", "Fast Food"),

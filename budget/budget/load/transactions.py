@@ -1,7 +1,7 @@
 import csv
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
-from typing import List, Iterator, Iterable
+from typing import List, Iterator, Iterable, Optional, Set, Tuple
 from dataclasses import dataclass
 
 
@@ -12,6 +12,7 @@ class Transaction:
     name: str  # name of transaction/company
     account: str  # name of account this is related to
     category: str  # food, transfer, insurance
+    meta_category: Optional[str] = None
 
 
 def read_transactions(ddir: Path) -> Iterator[Transaction]:
@@ -23,6 +24,13 @@ def read_transactions(ddir: Path) -> Iterator[Transaction]:
     old_transactions = ddir / "old_transactions.csv"
     if old_transactions.exists():
         with old_transactions.open(newline="") as tr:
+            cr = csv.reader(tr)
+            next(cr)  # ignore headers
+            for td in cr:
+                yield parse_transaction(td)
+    manual_transactions = ddir / "manual_transactions.csv"
+    if manual_transactions.exists():
+        with manual_transactions.open(newline="") as tr:
             cr = csv.reader(tr)
             next(cr)  # ignore headers
             for td in cr:

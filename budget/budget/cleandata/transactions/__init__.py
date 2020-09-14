@@ -2,7 +2,7 @@
 Cleans/Maps transaction information to a nicer format
 """
 
-from typing import Callable, Optional, Tuple, Union, Iterable, Any
+from typing import Callable, Tuple, Union, Iterable, Any
 from ...load.transactions import Transaction
 
 # this is a weird hack to allow multi-line-ish lambda expressions

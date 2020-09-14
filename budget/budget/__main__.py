@@ -4,9 +4,12 @@ import sys
 import click
 
 from typing import List
-from .transactions import Transaction, read_transactions
-from .balances import generate_account_history, Snapshot
-from .cleandata.fix_account_names import clean_data
+
+from .load.transactions import Transaction, read_transactions
+from .load.balances import generate_account_history, Snapshot
+
+from .cleandata.accounts import clean_data
+from .cleandata.transactions.transform import transform_all as transform
 
 from .manual import edit_manual_balances
 
@@ -33,6 +36,9 @@ def main(datadir: str, edit_manual: bool):
 
     # clean data
     balance_snapshots, transactions = clean_data(balance_snapshots, transactions)
+
+    # transform transaction description/categories
+    transactions = list(transform(transactions))
 
     click.secho("use 'balance_snapshots' and 'transactions'", fg="green")
 

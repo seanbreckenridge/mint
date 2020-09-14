@@ -4,8 +4,8 @@ from itertools import chain
 from typing import Tuple, List, Dict
 
 from .model import CleanAccount
-from ..balances import Account, Snapshot
-from ..transactions import Transaction
+from ...load.balances import Account, Snapshot
+from ...load.transactions import Transaction
 
 try:
     # private configuration

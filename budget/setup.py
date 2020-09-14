@@ -1,7 +1,15 @@
 import io
 from setuptools import setup, find_packages
 
-requirements = ["logzero", "click", "IPython", "more-itertools", "gitpython", "pick", "vimbuffer"]
+requirements = [
+    "logzero",
+    "click",
+    "IPython",
+    "more-itertools",
+    "gitpython",
+    "pick",
+    "vimbuffer",
+]
 
 setup(
     name="budget",

@@ -1,8 +1,6 @@
 from functools import lru_cache
 from typing import Iterator, List, Optional
 
-from more_itertools import strip
-
 from . import Matcher, Transaction, desc
 
 try:
@@ -33,7 +31,7 @@ def default_maps() -> Iterator[Matcher]:
         "amazon prime" in desc(t),
         lambda: (
             setattr(t, "name", "Amazon Prime"),
-            setattr(t, "category", "Subscription"),
+            setattr(t, "category", "Subscriptions"),
             t,
         ),
     )
@@ -82,6 +80,30 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
+        "carl's jr." in desc(t),
+        lambda: (
+            setattr(t, "name", "Carls Jr"),
+            setattr(t, "category", "Fast Food"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "mcdonalds" in desc(t).replace("'", ''),
+        lambda: (
+            setattr(t, "name", "McDonalds"),
+            setattr(t, "category", "Fast Food"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        desc(t).replace("'", '').startswith('dennys'),
+        lambda: (
+            setattr(t, "name", "Denny's"),
+            setattr(t, "category", "Fast Food"),
+            t,
+        ),
+    )
+    yield lambda t: (
         "subway" in desc(t),
         lambda: (
             setattr(t, "name", "Subway"),
@@ -102,6 +124,36 @@ def default_maps() -> Iterator[Matcher]:
         lambda: (
             setattr(t, "name", "Peets Coffee"),
             setattr(t, "category", "Coffee Shops"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        t.category == "Supermarkets",
+        lambda: (
+            setattr(t, "category", "Groceries"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "safeway" in desc(t),
+        lambda: (
+            setattr(t, "name", "Safeway"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "namecheap" in desc(t),
+        lambda: (
+            setattr(t, "name", "NameCheap"),
+            setattr(t, "category", "Technology"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "github.com" in desc(t),
+        lambda: (
+            setattr(t, "name", "Github Pro"),
+            setattr(t, "category", "Subscriptions"),
             t,
         ),
     )
@@ -133,4 +185,4 @@ def transform_single(transact: Transaction) -> Optional[Transaction]:
 
 # handles all transactions, discards None
 def transform_all(transactions: List[Transaction]) -> Iterator[Transaction]:
-    yield from strip(map(transform_single, transactions), lambda r: r is None)
+    yield from filter(lambda r: r is not None, map(transform_single, transactions))

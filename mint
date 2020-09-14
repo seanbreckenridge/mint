@@ -73,9 +73,11 @@ commit_data_changes() {
 	if cd "$DATA_DIR"; then
 		# add any changes to a local git repo
 		git add ./*.csv
-		git commit -m "transaction updates" || {
+		if git commit -m "transaction updates"; then
+			notify-send 'Updated mintify accounts!'
+		else
 			echo "No changes detected in data directory..."
-		}
+		fi
 	else
 		echo "Couldn't move into ${DATA_DIR}!" 1>&2
 		return 1

@@ -74,14 +74,6 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "taqueria la fuente" in desc(t),
-        lambda: (
-            setattr(t, "name", "Taqueria La Fuente"),
-            setattr(t, "category", "Food Dining"),
-            t,
-        ),
-    )
-    yield lambda t: (
         "jack in the box" in desc(t),
         lambda: (
             setattr(t, "name", "Jack in the Box"),

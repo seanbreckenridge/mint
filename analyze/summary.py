@@ -118,6 +118,7 @@ def recent_spending(transactions):
     describe_spending(
         last_30_days, "last 30 days", print_count=True, by="category"
     )  # print all transactions in last 30 days
+    return spending
 
 
 @click.command()
@@ -125,11 +126,11 @@ def recent_spending(transactions):
 def main(repl):
     account_snapshots, transactions = budget.data()
 
-    tr = recent_spending(transactions)
+    spend = recent_spending(transactions)
     acc = account_summary(account_snapshots)
 
     if repl:
-        click.secho("Use 'acc' and 'tr' to interact", fg="green")
+        click.secho("Use 'acc' and 'spend' to interact", fg="green")
         import IPython
 
         IPython.embed()

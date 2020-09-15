@@ -7,16 +7,10 @@ In addition to the `transactions.csv`/`balances.csv` file, this maintains `old_t
 My data dir looks like:
 
 ```
-.
-├── balances.csv
-├── manual_balances.csv
-├── manual_transactions.csv
-├── old_transactions.csv
-├── raw
-│   ├── bank_history.csv
-│   └── credit_history.csv
-└── transactions.csv
-
-1 directory, 7 files
+>>>PMARK
+#!/bin/bash
+perl -E 'print "`"x3, "\n"'
+cd ../data
+tree -I 'tags*' .
+perl -E 'print "`"x3, "\n"'
 ```
-

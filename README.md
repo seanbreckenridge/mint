@@ -35,11 +35,11 @@ Currently this:
 - can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
 - loads all the balance snapshots/transactions into memory and drops you into IPython
 - cleans up transaction data; has patterns to fix transaction names/sort into meta-categories
-- has a basic account summary
+- has a basic account/transaction summary
 
 Need to:
 
-- create code to track budget
+- create code to define budgets, and compare that against transactions
 - see if transactions get overwritten? it seems that `mintable` just saves the transactions it gets to the file, so may have to use the `git` repo to get transactions from the past
 
 ---
@@ -53,10 +53,13 @@ pip install -e .
 python3 -m budget --repl
 ```
 
-To my aliases file, I add:
+To setup, to my shell config I add:
 
 ```shell
 export MINT_DATA="${HOME}/Repos/mint/data"
 alias budget='python3 -m budget'
+alias budget-summary='python3 ~/Repos/mint/analyze/summary.py'
+# to edit the account/transaction map information
+alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```
 

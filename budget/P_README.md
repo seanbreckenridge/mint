@@ -8,7 +8,7 @@ My data dir looks like:
 
 ```
 >>>PMARK
-#!/bin/bash
+#!/bin/sh
 perl -E 'print "`"x3, "\n"'
 cd ../data
 tree -I 'tags*' .

@@ -1,9 +1,9 @@
 import os
-import warnings
 
 from pathlib import Path
 from typing import Tuple, List, Optional
 
+from .log import logger
 from .load.transactions import (
     Transaction,
     read_transactions,
@@ -40,8 +40,8 @@ def data(ddir: Optional[Path] = None) -> Tuple[List[Snapshot], List[Transaction]
         if tr.category in META_CATEGORIES:
             tr.meta_category = META_CATEGORIES[tr.category]
         else:
-            warnings.warn(
-                "Could not find a meta category for {} ({})".format(tr.category, tr)
+            logger.warning(
+                "Couldn't find meta_category for {}: {}".format(tr.categories, tr)
             )
 
     # debug duplicates

@@ -131,16 +131,10 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        t.category == "Supermarkets",
-        lambda: (
-            setattr(t, "category", "Groceries"),
-            t,
-        ),
-    )
-    yield lambda t: (
         "safeway" in desc(t),
         lambda: (
             setattr(t, "name", "Safeway"),
+            setattr(t, "category", "Groceries"),
             t,
         ),
     )

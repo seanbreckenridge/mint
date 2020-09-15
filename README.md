@@ -47,8 +47,7 @@ Need to:
 To install as an editable package (so changes to the code immediately update):
 
 ```
-git clone https://github.com/seanbreckenridge/mint && cd ./mint
-cd ./budget
+git clone https://github.com/seanbreckenridge/mint && cd ./mint/budget
 pip install -e .
 python3 -m budget --repl
 ```
@@ -56,6 +55,7 @@ python3 -m budget --repl
 To setup, to my shell config I add:
 
 ```shell
+# (~/Repos/mint is where I keep the cloned dir)
 export MINT_DATA="${HOME}/Repos/mint/data"
 alias budget='python3 -m budget'
 alias budget-summary='python3 ~/Repos/mint/analyze/summary.py'

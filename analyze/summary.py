@@ -74,7 +74,6 @@ def describe_spending(
     print_count: Union[int, bool] = 10,
     display_categories=True,
 ):
-    print()
     sorted_transactions = transactions.sort_values(["amount"], ascending=False)
     if print_count is True:
         click.echo(f"All transactions for {title}")

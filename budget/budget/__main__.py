@@ -4,7 +4,7 @@ import sys
 import click
 
 
-from . import data
+from . import data, get_data_dir
 from .manual import edit_manual_balances
 
 
@@ -16,7 +16,6 @@ def run_repl(balance_snapshots, transactions):
 
 
 @click.command()
-@click.argument("DATADIR")
 @click.option(
     "--edit-manual",
     is_flag=True,
@@ -24,8 +23,8 @@ def run_repl(balance_snapshots, transactions):
     help="Edit the manual_balances.csv file",
 )
 @click.option("--repl", is_flag=True, default=False, help="Use data in an IPython REPL")
-def main(datadir: str, edit_manual: bool, repl: bool):
-    ddir = Path(datadir).absolute()
+def main(edit_manual: bool, repl: bool):
+    ddir = get_data_dir()
     assert ddir.is_dir() and ddir.exists()
 
     if edit_manual:

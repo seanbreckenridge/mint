@@ -17,6 +17,6 @@ from_institution='interest account',  # this isn't really representative
 from_account=None,
 from_account_type='savings',
 to_institution='name of company',  # replace with what this actually is, so its readable
-to_account='',
+to_account='company interest account',
 to_type='savings',
 """

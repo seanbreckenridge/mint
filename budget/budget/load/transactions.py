@@ -14,27 +14,19 @@ class Transaction:
     category: str  # food, transfer, insurance
     meta_category: Optional[str] = None
 
+TRANSACTION_FILES = ['transactions.csv', 'old_transactions.csv', 'manual_transactions.csv']
 
 def read_transactions(ddir: Path) -> Iterator[Transaction]:
-    with (ddir / "transactions.csv").open(newline="") as tr:
-        cr = csv.reader(tr)
-        next(cr)  # ignore headers
-        for td in cr:
-            yield parse_transaction(td)
-    old_transactions = ddir / "old_transactions.csv"
-    if old_transactions.exists():
-        with old_transactions.open(newline="") as tr:
-            cr = csv.reader(tr)
-            next(cr)  # ignore headers
-            for td in cr:
-                yield parse_transaction(td)
-    manual_transactions = ddir / "manual_transactions.csv"
-    if manual_transactions.exists():
-        with manual_transactions.open(newline="") as tr:
-            cr = csv.reader(tr)
-            next(cr)  # ignore headers
-            for td in cr:
-                yield parse_transaction(td)
+    for tfile in TRANSACTION_FILES:
+        full_tfile = ddir / tfile
+        if full_tfile.exists():
+            with full_tfile.open(newline="") as tr:
+                cr = csv.reader(tr)
+                next(cr)  # ignore headers
+                for td in cr:
+                    yield parse_transaction(td)
+        else:
+            warnings.warn(f"{full_tfile} doesn't exist, ignoring...")
 
 
 def parse_transaction(td: List[str]) -> Transaction:

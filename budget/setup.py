@@ -7,6 +7,8 @@ requirements = [
     "more-itertools",
     "gitpython",
     "pick",
+    "pyfiglet",
+    "pandas",
     "vimbuffer",
 ]
 

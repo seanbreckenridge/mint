@@ -83,7 +83,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "carl's jr." in desc(t),
+        "carls jr" in desc(t).replace("'", "").replace(".", ""),
         lambda: (
             setattr(t, "name", "Carls Jr"),
             setattr(t, "category", "Fast Food"),

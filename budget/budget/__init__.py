@@ -1,7 +1,8 @@
+import os
 import warnings
 
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 from .load.transactions import (
     Transaction,
@@ -13,8 +14,17 @@ from .cleandata.accounts.fix_account_names import clean_data
 from .cleandata.transactions.transform import transform_all as transform
 from .cleandata.transactions.meta_categories import META_CATEGORIES
 
+def get_data_dir() -> Path:
+    if "MINT_DATA" in os.environ:
+        return Path(os.environ["MINT_DATA"])
+    else:
+        raise RuntimeError("No MINT_DATA environment variable!")
 
-def data(ddir: Path) -> Tuple[List[Snapshot], List[Transaction]]:
+
+def data(ddir: Optional[Path] = None) -> Tuple[List[Snapshot], List[Transaction]]:
+
+    if ddir is None:
+        ddir = get_data_dir()
 
     # load in and clean data
     balance_snapshots, transactions = clean_data(

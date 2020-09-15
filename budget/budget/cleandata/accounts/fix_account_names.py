@@ -19,6 +19,7 @@ except ImportError:
     warnings.warn("Could not import cleandata_conf.py")
     # no extra personal config, so just use defaults
     accounts_conf = lambda: []
+    default_account: str = "<NO ACCOUNT>"
 
 # what clean_data uses to get CleanAccount information, to clean the data
 # define a function in ./cleandata_conf.py called accounts_conf which

@@ -33,7 +33,7 @@ def main(edit_manual: bool, repl: bool):
 
     balance_snapshots, transactions = data(ddir)
 
-    if repl:
+    if repl or True:  # temporary, may change if I add other entrypoints
         run_repl(balance_snapshots, transactions)
         sys.exit(0)
 

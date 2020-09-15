@@ -1,7 +1,7 @@
 import warnings
 
 from itertools import chain
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Set
 
 
 from .model import CleanAccount
@@ -73,7 +73,7 @@ def clean_data(
 
     # validate data
     # get names of all the accounts, including any manual ones
-    account_names: List[str] = set(
+    account_names: Set[str] = set(
         chain(*[[acc.account for acc in cl.accounts] for cl in cleaned_balances])
     )
     # make sure every transaction is attached to an account

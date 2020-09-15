@@ -34,12 +34,13 @@ Currently this:
 - parses all of the data from mintable
 - can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
 - loads all the balance snapshots/transactions into memory and drops you into IPython
+- cleans up transaction data; has patterns to fix transaction names/sort into meta-categories
+- has a basic account summary
 
 Need to:
 
 - create code to track budget
-- clean up transaction data; both the name of transactions and do some wrangling on transaction category
-- create a Jupyter notebook and visualize this information
+- see if transactions get overwritten? it seems that `mintable` just saves the transactions it gets to the file, so may have to use the `git` repo to get transactions from the past
 
 ---
 
@@ -49,12 +50,13 @@ To install as an editable package (so changes to the code immediately update):
 git clone https://github.com/seanbreckenridge/mint && cd ./mint
 cd ./budget
 pip install -e .
-python3 -m budget ../data
+python3 -m budget --repl
 ```
 
 To my aliases file, I add:
 
 ```shell
-alias 'budget=python3 -m budget "${HOME}/Repos/mint/data"'
+export MINT_DATA="${HOME}/Repos/mint/data"
+alias budget='python3 -m budget'
 ```
 

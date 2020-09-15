@@ -14,6 +14,7 @@ from .cleandata.accounts.fix_account_names import clean_data
 from .cleandata.transactions.transform import transform_all as transform
 from .cleandata.transactions.meta_categories import META_CATEGORIES
 
+
 def get_data_dir() -> Path:
     if "MINT_DATA" in os.environ:
         return Path(os.environ["MINT_DATA"])

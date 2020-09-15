@@ -154,6 +154,14 @@ def default_maps() -> Iterator[Matcher]:
             t,
         ),
     )
+    # conert category; 'transfer - credit' to just 'trasfer'
+    yield lambda t: (
+        "transfer - credit" == str(t.category).lower(),
+        lambda: (
+            setattr(t, "category", "Transfer"),
+            t,
+        ),
+    )
 
 
 @lru_cache(1)
@@ -173,11 +181,13 @@ def transform_single(transact: Transaction) -> Optional[Transaction]:
     for m in maps():
         # try with this pattern
         resp, tr_func = m(tr)
-        if resp:
-            tr = tr_func()[-1]
+        if resp:  # this transaction matched the predicate from the matcher Matcher
+            tr = tr_func()[
+                -1
+            ]  # reassign so other matchers might apply to this, and continue matching
         if tr is None:
-            return None
-    return tr  # return unedited transaction if none matched
+            return None  # if this transaction should be ignored
+    return tr  # if none matched, this returns 'transact', else the updated tr
 
 
 # handles all transactions, discards None

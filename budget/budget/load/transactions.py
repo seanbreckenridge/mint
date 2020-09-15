@@ -4,6 +4,8 @@ from pathlib import Path
 from typing import List, Iterator, Iterable, Optional, Set, Tuple
 from dataclasses import dataclass
 
+from ..log import logger
+
 
 @dataclass
 class Transaction:
@@ -14,7 +16,13 @@ class Transaction:
     category: str  # food, transfer, insurance
     meta_category: Optional[str] = None
 
-TRANSACTION_FILES = ['transactions.csv', 'old_transactions.csv', 'manual_transactions.csv']
+
+TRANSACTION_FILES = [
+    "transactions.csv",
+    "old_transactions.csv",
+    "manual_transactions.csv",
+]
+
 
 def read_transactions(ddir: Path) -> Iterator[Transaction]:
     for tfile in TRANSACTION_FILES:
@@ -26,7 +34,9 @@ def read_transactions(ddir: Path) -> Iterator[Transaction]:
                 for td in cr:
                     yield parse_transaction(td)
         else:
-            warnings.warn(f"{full_tfile} doesn't exist, ignoring...")
+            logger.warning(
+                "File at {} doesn't exist, ignoring...".format(str(full_tfile))
+            )
 
 
 def parse_transaction(td: List[str]) -> Transaction:

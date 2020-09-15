@@ -22,7 +22,7 @@ META_CATEGORIES = {
     "Electronics": "Tech",
     "Taxes": "Misc",
     "Home Improvement": "Misc",
-    #"Supermarkets": "Misc",  # for now, if I start going to more of these, figure out some way to categories into misc/food
+    # "Supermarkets": "Misc",  # for now, if I start going to more of these, figure out some way to categories into misc/food
     "Shopping": "Misc",
     "Gifts Donations": "Misc",
     "Merchandise": "Misc",

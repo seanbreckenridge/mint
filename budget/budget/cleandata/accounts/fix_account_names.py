@@ -3,13 +3,18 @@ import warnings
 from itertools import chain
 from typing import Tuple, List, Dict
 
+
 from .model import CleanAccount
 from ...load.balances import Account, Snapshot
 from ...load.transactions import Transaction
+from ...log import logger
 
 try:
     # private configuration
-    from .cleandata_conf import accounts_conf
+    # default_account is just a string with matches the to_institution for an account. if CSV is missing account info,
+    # or manual transactions don't have an account assosiated with it, it uses that (probably just my typical
+    # checking account/cash)
+    from .cleandata_conf import accounts_conf, default_account
 except ImportError:
     warnings.warn("Could not import cleandata_conf.py")
     # no extra personal config, so just use defaults
@@ -74,9 +79,11 @@ def clean_data(
     # could just define a 'cash' institution if you wanted to keep track of money in wallet
     for tr in transactions:
         if tr.account not in account_names:
-            warnings.warn(
-                "Could not find balance information for {} (in {}) in accounts!: {}".format(
-                    tr.account, tr, account_names
-                )
-            )
+            logger.debug("Using default account name for {}...".format(tr))
+            tr.account = default_account
+            # warnings.warn(
+            #    "Could not find balance information for {} (in {}) in accounts!: {}".format(
+            #        tr.account, tr, account_names
+            #    )
+            # )
     return (cleaned_balances, transactions)

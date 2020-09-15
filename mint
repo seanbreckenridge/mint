@@ -112,3 +112,7 @@ fetch)
 	mintc "$@" || exit $?
 	;;
 esac
+
+# update P_README
+# https://github.com/seanbreckenridge/pmark
+command -v pmark 2>&1 >/dev/null && fd '^P_README.md$' -X pmark {} >/dev/null

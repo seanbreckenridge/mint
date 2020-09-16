@@ -156,7 +156,15 @@ def default_maps() -> Iterator[Matcher]:
     )
     # conert category; 'transfer - credit' to just 'trasfer'
     yield lambda t: (
-        "transfer - credit" == str(t.category).lower(),
+        str(t.category).lower().startswith("transfer - "),
+        lambda: (
+            setattr(t, "category", "Transfer"),
+            t,
+        ),
+    )
+    # treat investments as trasfers, resulting account balance shows up in balances anways
+    yield lambda t: (
+        str(t.category) == 'service - financial - financial planning and investments',
         lambda: (
             setattr(t, "category", "Transfer"),
             t,

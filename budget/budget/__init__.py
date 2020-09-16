@@ -41,7 +41,7 @@ def data(ddir: Optional[Path] = None) -> Tuple[List[Snapshot], List[Transaction]
             tr.meta_category = META_CATEGORIES[tr.category]
         else:
             logger.warning(
-                "Couldn't find meta_category for {}: {}".format(tr.categories, tr)
+                "Couldn't find meta_category for {}: {}".format(tr.category, tr)
             )
 
     # debug duplicates

@@ -9,6 +9,7 @@ requirements = [
     "pick",
     "pyfiglet",
     "pandas",
+    "tabulate",
     "vimbuffer",
 ]
 

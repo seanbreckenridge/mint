@@ -26,6 +26,14 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
+        "spotify" in desc(t),
+        lambda: (
+            setattr(t, "name", "Spotify"),
+            setattr(t, "category", "Subscriptions"),
+            t,
+        ),
+    )
+    yield lambda t: (
         desc(t).startswith("lyft"),
         lambda: (setattr(t, "name", "Lyft"), setattr(t, "category", "Travel"), t),
     )
@@ -164,7 +172,41 @@ def default_maps() -> Iterator[Matcher]:
     )
     # treat investments as trasfers, resulting account balance shows up in balances anways
     yield lambda t: (
-        str(t.category) == 'service - financial - financial planning and investments',
+        str(t.category) == "service - financial - financial planning and investments",
+        lambda: (
+            setattr(t, "category", "Transfer"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        # ignore payment holds (e.g. eBay) for paypal
+        str(t.category).lower()
+        in [
+            "payment hold",
+            "reversal of general account hold",
+            "account hold for open authorization",
+            "payment release",
+        ]
+        and t.account == "PayPal",
+        lambda: (None,),
+    )
+    # ignore currency conversions from paypal
+    yield lambda t: (
+        # ignore payment holds (e.g. eBay) for paypal
+        str(t.category).lower() == "general currency conversion"
+        and t.account == "PayPal",
+        lambda: (None,),
+    )
+    # mark paypal withdrawal/transfers as 'transfer'
+    yield lambda t: (
+        # ignore payment holds (e.g. eBay) for paypal
+        str(t.category).lower()
+        in [
+            "general credit card withdrawal",
+            "general credit card deposit",
+            "general withdrawal",
+        ]
+        and t.account == "PayPal",
         lambda: (
             setattr(t, "category", "Transfer"),
             t,

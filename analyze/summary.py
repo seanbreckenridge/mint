@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Union
+from typing import Union, Any
 
 import click
 import pandas as pd
@@ -9,10 +9,28 @@ import budget
 
 
 def banner(msg):
+    click.echo("```")
     click.secho(figlet_format(msg, "thin"), fg="blue")
+    click.echo("```")
+
+
+def hr():
+    click.echo("\n{}\n".format("-" * 10))
+
+
+def color(msg: Any, color: str = "green"):
+    return click.style(f"*{msg}*", fg=color)
+
+
+# helper function to print a table
+def print_df(df, *, index=False, rename_cols={}, sort_by=None, ascending=False):
+    if sort_by is not None and isinstance(sort_by, list):
+        df = df.sort_values(sort_by, ascending=ascending)
+    click.echo(df.rename(columns=rename_cols).to_markdown(index=index))
 
 
 def account_summary(account_snapshots):
+    hr()
     account = account_snapshots[-1].accounts
     ### ACCOUNT SUMMARY
     _af = pd.DataFrame.from_dict(account_snapshots[-1].accounts)
@@ -22,18 +40,13 @@ def account_summary(account_snapshots):
     no_credit_af = af.drop(af[af["account_type"] == "credit card"].index)
 
     banner("Accounts")
+    hr()
 
     # print account balances
-    print(
-        no_credit_af.sort_values(["current"], ascending=False)
-        .rename(columns={"account_type": "type"})
-        .to_string(index=False)
-    )
-    click.echo(
-        "\nTotal Balance: {}\n".format(
-            click.style(str(no_credit_af["current"].sum()), fg="green")
-        )
-    )
+    print_df(no_credit_af, rename_cols={"account_type": "type"}, sort_by=["current"])
+    click.echo("\nTotal Balance: {}\n".format(color(no_credit_af["current"].sum())))
+
+    hr()
 
     # credit cards
     credit_cards = _af.drop(af[af["account_type"] != "credit card"].index)
@@ -44,22 +57,17 @@ def account_summary(account_snapshots):
     credit_card_total = credit_cards["current"].sum()
     if credit_card_total > 0.5:
         banner("Credit Cards")
-
-        print(
-            credit_cards.sort_values(["current"], ascending=False).to_string(
-                index=False
-            )
-        )
+        print_df(credit_cards, sort_by=["current"])
         click.echo(
             "\nCredit Card Usage: {}\n".format(
                 click.style(
-                    str(credit_card_total),
+                    f"*{credit_card_total}*",
                     fg="red" if credit_card_total > 100 else "green",
                 )
             )
         )
     else:
-        click.secho("No credit card usage!", fg="green")
+        click.secho("**No credit card usage!**", fg="green")
 
     return _af
 
@@ -78,36 +86,35 @@ def describe_spending(
     print_count: Union[int, bool] = 10,
     display_categories=True,
 ):
-    sorted_transactions = transactions.sort_values(["amount"], ascending=False).rename(
-        columns={"meta_category": "meta"}
+    hr()
+    sorted_transactions = transactions.sort_values(["amount"], ascending=False).drop(
+        ["meta_category"], axis=1
     )
     if print_count is True:
-        click.echo(f"All transactions for {title}")
-        click.echo(sorted_transactions.to_string(index=False))
+        click.echo(f"## All transactions for {title}\n")
+        print_df(sorted_transactions)
     else:
-        click.echo(f"Largest transactions for {title}")
-        click.echo(sorted_transactions.head(print_count).to_string(index=False))
+        click.echo(f"## Largest transactions for {title}\n")
+        print_df(sorted_transactions.head(print_count))
+
+    hr()
 
     total_spending = sorted_transactions["amount"].sum()
     if display_categories:
+        # group by categories
         by_meta_category = (
             transactions.groupby([by]).sum().sort_values(["amount"], ascending=False)
         )
+        # add percentage
         by_meta_category["percent"] = by_meta_category["amount"].apply(
             lambda am: f"{am/total_spending * 100:.1f}%"
         )
         # replace names of index to be more generic
         by_meta_category.index.name = "category"
-        click.echo(
-            by_meta_category.sort_values(["amount"], ascending=False).to_string()
-        )
+        print(end="\n")  # print a newline
+        print_df(by_meta_category, sort_by=["amount"], index=True)
 
-    click.echo(
-        "\n{} spending: {}\n".format(
-            title, click.style(str(f"{total_spending:.2f}"), fg="green")
-        )
-    )
-    print()
+    click.echo("\n{} spending: {}\n\n".format(title, color(f"{total_spending:.2f}")))
     return sorted_transactions
 
 

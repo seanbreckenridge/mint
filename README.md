@@ -63,3 +63,15 @@ alias budget-summary='python3 ~/Repos/mint/analyze/summary.py'
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```
 
+`budget-summary` emits markdown tables/formatting, so it can be used nicely with a terminal markdown viewer like [`glow`](https://github.com/charmbracelet/glow):
+
+```
+# ( defined in my aliases/functions file )
+budget-summary() {
+  if [[ -z "$1" ]]; then
+    python3 ~/Repos/mint/analyze/summary.py | glow -
+  else
+    python3 ~/Repos/mint/analyze/summary.py "$@"
+  fi
+}
+```

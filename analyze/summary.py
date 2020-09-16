@@ -24,7 +24,11 @@ def account_summary(account_snapshots):
     banner("Accounts")
 
     # print account balances
-    print(no_credit_af.sort_values(["current"], ascending=False).to_string(index=False))
+    print(
+        no_credit_af.sort_values(["current"], ascending=False)
+        .rename(columns={"account_type": "type"})
+        .to_string(index=False)
+    )
     click.echo(
         "\nTotal Balance: {}\n".format(
             click.style(str(no_credit_af["current"].sum()), fg="green")
@@ -38,7 +42,7 @@ def account_summary(account_snapshots):
     )
 
     credit_card_total = credit_cards["current"].sum()
-    if credit_card_total > 0:
+    if credit_card_total > 0.5:
         banner("Credit Cards")
 
         print(
@@ -74,7 +78,9 @@ def describe_spending(
     print_count: Union[int, bool] = 10,
     display_categories=True,
 ):
-    sorted_transactions = transactions.sort_values(["amount"], ascending=False)
+    sorted_transactions = transactions.sort_values(["amount"], ascending=False).rename(
+        columns={"meta_category": "meta"}
+    )
     if print_count is True:
         click.echo(f"All transactions for {title}")
         click.echo(sorted_transactions.to_string(index=False))
@@ -82,18 +88,23 @@ def describe_spending(
         click.echo(f"Largest transactions for {title}")
         click.echo(sorted_transactions.head(print_count).to_string(index=False))
 
+    total_spending = sorted_transactions["amount"].sum()
     if display_categories:
         by_meta_category = (
             transactions.groupby([by]).sum().sort_values(["amount"], ascending=False)
         )
+        by_meta_category["percent"] = by_meta_category["amount"].apply(
+            lambda am: f"{am/total_spending * 100:.1f}%"
+        )
+        # replace names of index to be more generic
         by_meta_category.index.name = "category"
-        by_meta_category.columns = ["total"]
-        click.echo(by_meta_category.sort_values(["total"], ascending=False).to_string())
+        click.echo(
+            by_meta_category.sort_values(["amount"], ascending=False).to_string()
+        )
 
-    total = sorted_transactions["amount"].sum()
     click.echo(
         "\n{} spending: {}\n".format(
-            title, click.style(str(f"{total:.2f}"), fg="green")
+            title, click.style(str(f"{total_spending:.2f}"), fg="green")
         )
     )
     print()
@@ -106,12 +117,14 @@ def recent_spending(transactions):
     # remove transfers between accounts/income
     spending = pd.DataFrame(_tr[_tr["meta_category"] != "Transfer"])
 
+    all_time = spending
     last_year = _get_timeframe(spending, timedelta(days=365))
     last_3_months = _get_timeframe(spending, timedelta(days=90))
     last_30_days = _get_timeframe(spending, timedelta(days=30))
 
     banner("Transactions")
 
+    describe_spending(all_time, "full transaction history", print_count=True)
     describe_spending(last_year, "last year", print_count=80)
     # use specific categories for 3 months/30 days
     describe_spending(last_3_months, "last 3 months", print_count=60, by="category")

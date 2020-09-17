@@ -231,12 +231,14 @@ def transform_single(transact: Transaction) -> Optional[Transaction]:
     for m in maps():
         # try with this pattern
         resp, tr_func = m(tr)
-        if resp:  # this transaction matched the predicate from the matcher Matcher
-            tr = tr_func()[
-                -1
-            ]  # reassign so other matchers might apply to this, and continue matching
+        if resp is True:  # this transaction matched the predicate from the Matcher
+            # call the function so the transaction is edited, and reassign it to tr
+            # reassign so other matchers might apply to this, and continue matching
+            tr = tr_func()[-1]
+        # if the tr_func returned none, the transaction should exit early from
+        # comparing against other matchers; this should be ignored
         if tr is None:
-            return None  # if this transaction should be ignored
+            return None
     return tr  # if none matched, this returns 'transact', else the updated tr
 
 

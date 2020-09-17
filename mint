@@ -74,7 +74,7 @@ commit_data_changes() {
 		# add any changes to a local git repo
 		git add ./*.csv
 		if git commit -m "transaction updates"; then
-			notify-send 'Updated mintify accounts!'
+			:
 		else
 			echo "No changes detected in data directory..."
 		fi
@@ -115,4 +115,4 @@ esac
 
 # update P_README
 # https://github.com/seanbreckenridge/pmark
-command -v pmark 2>&1 >/dev/null && fd '^P_README.md$' -X pmark {} >/dev/null
+command -v pmark >/dev/null 2>&1 && fd '^P_README.md$' -X pmark {} >/dev/null

@@ -23,7 +23,7 @@ setup(
     license="MIT",
     packages=find_packages(include=["budget"]),
     install_requires=requirements,
-    keywords="reddit data",
+    keywords="money finances data",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",

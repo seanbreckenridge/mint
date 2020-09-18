@@ -135,9 +135,8 @@ def recent_spending(transactions):
     describe_spending(last_year, "last year", print_count=80)
     # use specific categories for 3 months/30 days
     describe_spending(last_3_months, "last 3 months", print_count=60, by="category")
-    describe_spending(
-        last_30_days, "last 30 days", print_count=True, by="category"
-    )  # print all transactions in last 30 days
+    # print all transactions in last 30 days
+    describe_spending(last_30_days, "last 30 days", print_count=True, by="category")
     return spending
 
 

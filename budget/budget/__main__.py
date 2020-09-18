@@ -30,6 +30,7 @@ def main(edit_manual: bool, repl: bool):
         sys.exit(0)
 
     balance_snapshots, transactions = data(ddir)
+    transactions.sort(key=lambda t: t.on)
 
     if repl or True:  # temporary, may change if I add other entrypoints
         run_repl(balance_snapshots, transactions)

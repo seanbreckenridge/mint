@@ -44,7 +44,7 @@ def account_summary(account_snapshots):
 
     # print account balances
     print_df(no_credit_af, rename_cols={"account_type": "type"}, sort_by=["current"])
-    click.echo("\nTotal Balance: {}\n".format(color(no_credit_af["current"].sum())))
+    click.echo("\nTotal Balance: {}\n".format(color("{:.2f}".format(no_credit_af["current"].sum()))))
 
     hr()
 

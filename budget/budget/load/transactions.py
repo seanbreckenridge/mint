@@ -1,8 +1,11 @@
 import csv
+import io
 from datetime import date, datetime
 from pathlib import Path
 from typing import List, Iterator, Iterable, Optional, Set, Tuple
 from dataclasses import dataclass
+
+import git
 
 from ..log import logger
 
@@ -17,29 +20,56 @@ class Transaction:
     meta_category: Optional[str] = None
 
 
-TRANSACTION_FILES = [
-    "transactions.csv",
+TRANSACTION_FILE = "transactions.csv"
+
+STATIC_TRANSACTION_FILES = [
     "old_transactions.csv",
     "manual_transactions.csv",
 ]
 
 
+def read_transaction_obj(file_obj) -> Iterator[List[str]]:
+    cr = csv.reader(file_obj)
+    next(cr)  # ignore headers
+    yield from cr
+
+
+# read the transactions.csv history and return unique transactions
+def read_transactions_history(repo: git.Repo) -> Iterator[Transaction]:
+    emitted_lines: Set[Tuple[str]] = set()
+    for commit in repo.iter_commits():
+        try:
+            blob = commit.tree / TRANSACTION_FILE
+        except KeyError:
+            continue
+        with io.BytesIO(blob.data_stream.read()) as f:
+            transactions_str: str = f.read().decode("utf-8")
+        # add each line from this commit to the set
+        # convert to tuple so its hashable
+        for line in map(tuple, read_transaction_obj(io.StringIO(transactions_str))):
+            if line not in emitted_lines:
+                emitted_lines.add(line)
+            else:
+                logger.debug(
+                    f"while parsing transactions git history: {line} already in set"
+                )
+    yield from map(parse_transaction, emitted_lines)
+
+
 def read_transactions(ddir: Path) -> Iterator[Transaction]:
-    for tfile in TRANSACTION_FILES:
+    for tfile in STATIC_TRANSACTION_FILES:
         full_tfile = ddir / tfile
         if full_tfile.exists():
             with full_tfile.open(newline="") as tr:
-                cr = csv.reader(tr)
-                next(cr)  # ignore headers
-                for td in cr:
-                    yield parse_transaction(td)
+                yield from map(parse_transaction, read_transaction_obj(tr))
         else:
             logger.warning(
                 "File at {} doesn't exist, ignoring...".format(str(full_tfile))
             )
+    yield from read_transactions_history(git.Repo(str(ddir)))
 
 
-def parse_transaction(td: List[str]) -> Transaction:
+def parse_transaction(td: Iterable[str]) -> Transaction:
     return Transaction(
         on=date(**dict(zip(("year", "month", "day"), map(int, td[0].split("-"))))),
         amount=float(td[1]),

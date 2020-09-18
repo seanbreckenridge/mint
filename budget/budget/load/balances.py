@@ -60,7 +60,7 @@ def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Accoun
     except KeyError:
         return
     with io.BytesIO(blob.data_stream.read()) as f:
-        balances_str = f.read().decode("utf-8")
+        balances_str: str = f.read().decode("utf-8")
     bcsv = csv.reader(io.StringIO(balances_str))
     next(bcsv)  # ignore header row
     for r in bcsv:

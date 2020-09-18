@@ -33,14 +33,13 @@ Currently this:
 
 - parses all of the data from mintable
 - can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
-- loads all the balance snapshots/transactions into memory and drops you into IPython
+- loads all the balance snapshots/transactions into memory (using git history to find possibly deleted ones) and drops you into `IPython`
 - cleans up transaction data; has patterns to fix transaction names/sort into meta-categories
-- has a basic account/transaction summary
+- has a account/transaction summary, summarizes spending categories over a couple time periods
 
 Need to:
 
 - create code to define budgets, and compare that against transactions
-- see if transactions get overwritten? it seems that `mintable` just saves the transactions it gets to the file, so may have to use the `git` repo to get transactions from the past
 
 ---
 

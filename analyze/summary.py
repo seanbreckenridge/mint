@@ -22,6 +22,11 @@ def color(msg: Any, color: str = "green"):
     return click.style(f"*{msg}*", fg=color)
 
 
+# shorthand to print table
+def pr(df):
+    print(df.to_string())
+
+
 # helper function to print a table
 def print_df(df, *, index=False, rename_cols={}, sort_by=None, ascending=False):
     if sort_by is not None and isinstance(sort_by, list):
@@ -147,6 +152,9 @@ def main(repl):
 
     spend = recent_spending(transactions)
     acc = account_summary(account_snapshots)
+
+    # sort by date
+    spend.sort_values(['on'], inplace=True)
 
     if repl:
         click.secho("Use 'acc' and 'spend' to interact", fg="green")

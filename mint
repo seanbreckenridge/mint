@@ -115,4 +115,4 @@ esac
 
 # update P_README
 # https://github.com/seanbreckenridge/pmark
-command -v pmark >/dev/null 2>&1 && fd '^P_README.md$' -X pmark {} >/dev/null
+havecmd fd && havecmd pmark && fd '^P_README.md$' -X pmark >/dev/null

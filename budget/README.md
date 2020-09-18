@@ -14,9 +14,10 @@ My data dir looks like:
 ├── old_transactions.csv
 ├── raw
 │   ├── bank_history.csv
-│   └── credit_history.csv
+│   ├── credit_history.csv
+│   └── paypal.csv
 └── transactions.csv
 
-1 directory, 7 files
+1 directory, 8 files
 ```
 

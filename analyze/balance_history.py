@@ -93,8 +93,6 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
         for _, row in ad.iterrows():
             account_history[row["account"]][i] = row["current"]
 
-        # ax.plot(dates_cleaned, uploaded, label="uploaded")
-
     for acc, acc_list in account_history.items():
         ax.plot(secs, acc_list, label=acc)
 

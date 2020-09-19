@@ -14,6 +14,11 @@ from budget import data, Snapshot
 
 tz = get_localzone()
 
+# convert to timestamp and back to remove git timestamp info
+def fix_timestamp(t: datetime) -> datetime:
+    return tz.localize(datetime.fromtimestamp(t.timestamp()))
+
+
 # get all balances from one snapshot
 def assets(s: Snapshot) -> pd.DataFrame:
     def invert_credit_card(df_row):
@@ -97,10 +102,8 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     account_history: Dict[str, np.array] = {
         n: np.zeros(len(acc_clean)) for n in account_names
     }
-    # convert to timestamp and back to remove git timestamp info
-    secs: np.array = np.array(
-        [tz.localize(datetime.fromtimestamp(sn[1].timestamp())) for sn in acc_clean]
-    )
+
+    secs: np.array = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]
 

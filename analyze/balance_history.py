@@ -47,7 +47,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
 
     # create sums for each snapshot
     dates: np.array = np.array([d.timestamp() for d in df.index])
-    vals: np.array = np.array(df['sum'])
+    vals: np.array = np.array(df["sum"])
 
     # linear regression
     # y: money, x: dates
@@ -58,22 +58,19 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
 
     # difference between expected and actual
     residuals: np.array = vals - regression_y
-    mean_difference: float = np.abs(residuals).mean()
+    residual_zscores: np.array = stats.zscore(residuals)
+    # get indices of items that are further than 1.5 deviations away
+    outlier_indices: np.array = np.where(residual_zscores > 1.5)[0]
 
-    # TODO: use stdev?
-    # get indices of items that are further from 2 the mean difference
-    more_than = np.vectorize(lambda v: abs(v) > mean_difference * 2.5)
-    more_than_indices: np.array = np.where(more_than(residuals) == True)[0]
-
-    # remove those
-    # dates_cleaned = np.delete(dates, more_than_indices)
-    # vals_cleaned = np.delete(vals, more_than_indices)
+    # remove those from dates/vals
+    # dates_cleaned = np.delete(dates, outlier_indices)
+    # vals_cleaned = np.delete(vals, outlier_indices)
 
     # cleaned snapshot data
     acc_clean: List[Tuple[pd.DataFrame, datetime]] = [
-        a for i, a in enumerate(acc_data) if i not in more_than_indices
+        a for i, a in enumerate(acc_data) if i not in outlier_indices
     ]
-    # for index in more_than_indices:
+    # for index in outlier_indices:
     # print("Removing outlier value ({}) :\n {}".format(residuals[index], acc_data[index]))
     # pass
     click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
@@ -88,7 +85,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     # clean data
     acc_clean = remove_outliers(account_snapshots)
 
-    plt.style.use('dark_background')
+    plt.style.use("dark_background")
     # graph each data point
     fig, ax = plt.subplots(figsize=(18, 10))
 
@@ -115,7 +112,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
         ax.plot(secs, acc_list, label=acc)
 
     ax.xaxis.set_major_formatter(mdate.DateFormatter("%d-%m-%y %H:%M:%S"))
-    ax.yaxis.set_major_formatter('${x:,}')
+    ax.yaxis.set_major_formatter("${x:,}")
     fig.autofmt_xdate()
 
     plt.legend(loc="upper left")

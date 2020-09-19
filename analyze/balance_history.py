@@ -19,12 +19,13 @@ def fix_timestamp(t: datetime) -> datetime:
     return tz.localize(datetime.fromtimestamp(t.timestamp()))
 
 
+def invert_credit_card(df_row):
+    if df_row["account_type"] == "credit card":
+        df_row["current"] = df_row["current"] * -1
+    return df_row
+
 # get all balances from one snapshot
 def assets(s: Snapshot) -> pd.DataFrame:
-    def invert_credit_card(df_row):
-        if df_row["account_type"] == "credit card":
-            df_row["current"] = df_row["current"] * -1
-        return df_row
 
     df = pd.DataFrame.from_dict(s.accounts)
     # invert credit card balances
@@ -65,7 +66,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
     residuals: np.array = vals - regression_y
     residual_zscores: np.array = stats.zscore(residuals)
     # get indices of items that are further than 1.5 deviations away
-    outlier_indices: np.array = np.where(residual_zscores > 1.5)[0]
+    outlier_indices: np.array = next(iter(np.where(residual_zscores > 1.5)))
 
     # remove those from dates/vals
     # dates_cleaned = np.delete(dates, outlier_indices)

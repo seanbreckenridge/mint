@@ -76,7 +76,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
     click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
 
     # graph each data point
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(18,10))
 
     # get all account names
     account_names = set(chain(*[list(a[0]["account"].values) for a in acc_clean]))

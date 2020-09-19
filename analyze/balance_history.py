@@ -104,19 +104,21 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
     plt.legend(loc="upper left")
     plt.xlabel("Date")
     plt.ylabel("Account Balance")
-    plt.savefig("/tmp/balance_history.png")
-    click.echo("Saved to /tmp/balance_history.png")
+
+    to_file = '/tmp/balance_history.png'
+    plt.savefig(to_file)
+    click.echo("Saved to {}".format(to_file))
 
     if graph:
         plt.show()
 
 
 @click.command()
-@click.option("--graph", default=False, is_flag=True)
-def main(graph):
+@click.option("--show", default=False, is_flag=True)
+def main(show):
     account_snapshots, _ = data()
     account_snapshots.sort(key=lambda s: s.at)
-    graph_account_balances(account_snapshots, graph)
+    graph_account_balances(account_snapshots, show)
 
 
 if __name__ == "__main__":

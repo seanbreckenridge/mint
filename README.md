@@ -62,7 +62,7 @@ To setup, to my shell config I add:
 export MINT_DATA="${HOME}/Repos/mint/data"
 alias budget='python3 -m budget'
 alias budget-summary='python3 ~/Repos/mint/analyze/summary.py'
-alias budget-history='python3 ~/Repos/mint/analyze/balance_history.py --graph'
+alias budget-history='python3 ~/Repos/mint/analyze/balance_history.py --show'
 # to edit the account/transaction map information
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```

@@ -11,6 +11,9 @@ requirements = [
     "pandas",
     "tabulate",
     "vimbuffer",
+    "scipy",
+    "numpy",
+    "matplotlib",
 ]
 
 setup(

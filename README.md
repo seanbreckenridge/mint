@@ -33,9 +33,13 @@ Currently this:
 
 - parses all of the data from mintable
 - can parse the additional, manually edited transactions/balances files; includes TUIs to edit manually tracked balances
-- loads all the balance snapshots/transactions into memory (using git history to find possibly deleted ones) and drops you into `IPython`
+- loads all the balance snapshots/transactions into memory (using git history to find possibly overwritten ones) and drops you into `IPython`
 - cleans up transaction data; has patterns to fix transaction names/sort into meta-categories
-- has a account/transaction summary, summarizes spending categories over a couple time periods
+
+[`analyze`](./analyze/):
+
+  - has a account/transaction summary, summarizes spending categories over a couple time periods
+  - uses the git history to create a graph of account balances over time, removing outliers that might have occurred because of account transfers.
 
 Need to:
 
@@ -58,6 +62,7 @@ To setup, to my shell config I add:
 export MINT_DATA="${HOME}/Repos/mint/data"
 alias budget='python3 -m budget'
 alias budget-summary='python3 ~/Repos/mint/analyze/summary.py'
+alias balance-history='python3 ~/Repos/mint/analyze/balance_history.py --graph'
 # to edit the account/transaction map information
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```

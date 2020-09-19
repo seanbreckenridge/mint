@@ -27,7 +27,7 @@ def assets(s: Snapshot) -> pd.DataFrame:
 def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]:
     """
     remove outlier snapshots (ones that might have happened while
-    transfers were happening between different accounts
+    transfers were happening between different accounts)
 
     after removing those, plot each account across the git hitsory
     """

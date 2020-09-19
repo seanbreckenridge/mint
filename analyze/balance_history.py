@@ -76,7 +76,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
     click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
 
     # graph each data point
-    fig, ax = plt.subplots(figsize=(18,10))
+    fig, ax = plt.subplots(figsize=(18, 10))
 
     # get all account names
     account_names = set(chain(*[list(a[0]["account"].values) for a in acc_clean]))
@@ -105,7 +105,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
     plt.xlabel("Date")
     plt.ylabel("Account Balance")
 
-    to_file = '/tmp/balance_history.png'
+    to_file = "/tmp/balance_history.png"
     plt.savefig(to_file)
     click.echo("Saved to {}".format(to_file))
 

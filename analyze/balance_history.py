@@ -47,7 +47,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
 
     # create sums for each snapshot
     dates: np.array = np.array([d.timestamp() for d in df.index])
-    vals: np.array = np.array(list(chain(*df.values.tolist())))
+    vals: np.array = np.array(df['sum'])
 
     # linear regression
     # y: money, x: dates
@@ -88,6 +88,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     # clean data
     acc_clean = remove_outliers(account_snapshots)
 
+    plt.style.use('dark_background')
     # graph each data point
     fig, ax = plt.subplots(figsize=(18, 10))
 
@@ -114,6 +115,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
         ax.plot(secs, acc_list, label=acc)
 
     ax.xaxis.set_major_formatter(mdate.DateFormatter("%d-%m-%y %H:%M:%S"))
+    ax.yaxis.set_major_formatter('${x:,}')
     fig.autofmt_xdate()
 
     plt.legend(loc="upper left")

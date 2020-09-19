@@ -1,4 +1,4 @@
-from typing import Iterator, Dict
+from typing import Dict, Set, Tuple, List
 from datetime import datetime
 from itertools import chain
 
@@ -24,18 +24,11 @@ def assets(s: Snapshot) -> pd.DataFrame:
     return df.apply(invert_credit_card, axis=1)
 
 
-def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]:
-    """
-    remove outlier snapshots (ones that might have happened while
-    transfers were happening between different accounts)
-
-    after removing those, plot each account across the git hitsory
-    """
-
+def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
     click.echo("Processing {} snapshots...".format(len(account_snapshots)))
     # get data
-    acc_data = [(assets(s), s.at) for s in account_snapshots]
-    df = pd.DataFrame.from_dict(
+    acc_data: List[Tuple[pd.DataFrame, datetime]] = [(assets(s), s.at) for s in account_snapshots]
+    df: pd.DataFrame = pd.DataFrame.from_dict(
         [{"sum": d[0]["current"].sum(), "at": d[1]} for d in acc_data]
     )
 
@@ -44,48 +37,60 @@ def graph_account_balances(account_snapshots, graph: bool) -> Iterator[Snapshot]
     df.drop(["at"], axis=1, inplace=True)
 
     # create sums for each snapshot
-    dates = np.array([d.timestamp() for d in df.index])
-    vals = np.array(list(chain(*df.values.tolist())))
+    dates: np.array = np.array([d.timestamp() for d in df.index])
+    vals: np.array = np.array(list(chain(*df.values.tolist())))
 
     # linear regression
     # y: money, x: dates
     slope, intercept, _, _, _ = stats.linregress(dates, vals)
 
     # calculate expected based on slope and intercept
-    regression_y = intercept + slope * dates
+    regression_y: np.array = intercept + slope * dates
 
     # difference between expected and actual
-    residuals = vals - regression_y
-    mean_difference = np.abs(residuals).mean()
+    residuals: np.array = vals - regression_y
+    mean_difference: float = np.abs(residuals).mean()
 
     # TODO: use stdev?
     # get indices of items that are further from 2 the mean difference
     more_than = np.vectorize(lambda v: abs(v) > mean_difference * 2.5)
-    more_than_indices = np.where(more_than(residuals) == True)[0]
+    more_than_indices: np.array = np.where(more_than(residuals) == True)[0]
 
     # remove those
     # dates_cleaned = np.delete(dates, more_than_indices)
     # vals_cleaned = np.delete(vals, more_than_indices)
 
     # cleaned snapshot data
-    acc_clean = [a for i, a in enumerate(acc_data) if i not in more_than_indices]
-
+    acc_clean: List[Tuple[pd.DataFrame, datetime]] = [a for i, a in enumerate(acc_data) if i not in more_than_indices]
     # for index in more_than_indices:
     # print("Removing outlier value ({}) :\n {}".format(residuals[index], acc_data[index]))
     # pass
     click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
+    return acc_clean
+
+
+def graph_account_balances(account_snapshots, graph: bool) -> None:
+    """
+    remove outlier snapshots (ones that might have happened while
+    transfers were happening between different accounts)
+
+    after removing those, plot each account across the git hitsory
+    """
+
+    # clean data
+    acc_clean = remove_outliers(account_snapshots)
 
     # graph each data point
     fig, ax = plt.subplots(figsize=(18, 10))
 
     # get all account names
-    account_names = set(chain(*[list(a[0]["account"].values) for a in acc_clean]))
+    account_names: Set[str] = set(chain(*[list(a[0]["account"].values) for a in acc_clean]))
     # create empty account data arrays for each timestamp
     account_history: Dict[str, np.array] = {
         n: np.zeros(len(acc_clean)) for n in account_names
     }
     # convert to timestamp and back to remove git timestamp info
-    secs = np.array([datetime.fromtimestamp(sn[1].timestamp()) for sn in acc_clean])
+    secs: np.array = np.array([datetime.fromtimestamp(sn[1].timestamp()) for sn in acc_clean])
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]
 

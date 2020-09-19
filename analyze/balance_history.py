@@ -25,9 +25,16 @@ def assets(s: Snapshot) -> pd.DataFrame:
 
 
 def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
+    """
+    remove outlier snapshots (ones that might have happened while
+    transfers were happening between different accounts)
+    """
+
     click.echo("Processing {} snapshots...".format(len(account_snapshots)))
     # get data
-    acc_data: List[Tuple[pd.DataFrame, datetime]] = [(assets(s), s.at) for s in account_snapshots]
+    acc_data: List[Tuple[pd.DataFrame, datetime]] = [
+        (assets(s), s.at) for s in account_snapshots
+    ]
     df: pd.DataFrame = pd.DataFrame.from_dict(
         [{"sum": d[0]["current"].sum(), "at": d[1]} for d in acc_data]
     )
@@ -61,7 +68,9 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
     # vals_cleaned = np.delete(vals, more_than_indices)
 
     # cleaned snapshot data
-    acc_clean: List[Tuple[pd.DataFrame, datetime]] = [a for i, a in enumerate(acc_data) if i not in more_than_indices]
+    acc_clean: List[Tuple[pd.DataFrame, datetime]] = [
+        a for i, a in enumerate(acc_data) if i not in more_than_indices
+    ]
     # for index in more_than_indices:
     # print("Removing outlier value ({}) :\n {}".format(residuals[index], acc_data[index]))
     # pass
@@ -71,10 +80,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
 
 def graph_account_balances(account_snapshots, graph: bool) -> None:
     """
-    remove outlier snapshots (ones that might have happened while
-    transfers were happening between different accounts)
-
-    after removing those, plot each account across the git hitsory
+    plot each account across the git hitsory
     """
 
     # clean data
@@ -84,13 +90,17 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     fig, ax = plt.subplots(figsize=(18, 10))
 
     # get all account names
-    account_names: Set[str] = set(chain(*[list(a[0]["account"].values) for a in acc_clean]))
+    account_names: Set[str] = set(
+        chain(*[list(a[0]["account"].values) for a in acc_clean])
+    )
     # create empty account data arrays for each timestamp
     account_history: Dict[str, np.array] = {
         n: np.zeros(len(acc_clean)) for n in account_names
     }
     # convert to timestamp and back to remove git timestamp info
-    secs: np.array = np.array([datetime.fromtimestamp(sn[1].timestamp()) for sn in acc_clean])
+    secs: np.array = np.array(
+        [datetime.fromtimestamp(sn[1].timestamp()) for sn in acc_clean]
+    )
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]
 

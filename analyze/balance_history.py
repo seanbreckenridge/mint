@@ -7,10 +7,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
-
 from scipy import stats
+from tzlocal import get_localzone
 
 from budget import data, Snapshot
+
+tz = get_localzone()
 
 # get all balances from one snapshot
 def assets(s: Snapshot) -> pd.DataFrame:
@@ -99,7 +101,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     }
     # convert to timestamp and back to remove git timestamp info
     secs: np.array = np.array(
-        [datetime.fromtimestamp(sn[1].timestamp()) for sn in acc_clean]
+        [tz.localize(datetime.fromtimestamp(sn[1].timestamp())) for sn in acc_clean]
     )
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]

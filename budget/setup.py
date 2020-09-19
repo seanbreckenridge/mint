@@ -14,6 +14,7 @@ requirements = [
     "scipy",
     "numpy",
     "matplotlib",
+    "tzlocal",
 ]
 
 setup(

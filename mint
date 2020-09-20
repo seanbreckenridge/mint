@@ -1,23 +1,41 @@
 #!/bin/bash
 # setup/interact with accounts, fetch data and keep it tracked in git
 
-# Function to test if a command is on the users $PATH
-# i.e. if they have a binary/script installed
+# get the name of this script
+readonly script_name='mint'
+
+# function to verify an external command is installed
 havecmd() {
-	if command -v "$1" >/dev/null 2>&1; then
+	local BINARY ERRMSG
+	# error if first argument isn't provided
+	BINARY="${1:?Must provide command to check}"
+	# the commend exists, exit with 0 (success!)
+	if command -v "$BINARY" >/dev/null 2>&1; then
 		return 0
 	else
-		printf "Requires '%s', could not find that on your \$PATH\n" "$1" >&2
+		# construct error message
+		ERRMSG="'$script_name' requires '$BINARY', could not find that on your \$PATH"
+		if [[ -n "$2" ]]; then
+			ERRMSG="$ERRMSG. $2"
+		fi
+		printf '%s\n' "$ERRMSG" 1>&2
 		return 1
 	fi
 }
 
 # check commands
 set -e
-havecmd whiptail
-havecmd figlet
 havecmd tput
+havecmd figlet
+havecmd whiptaill "This is typically installable as 'newt' or 'libnewt'"
+havecmd mintable "Install by running: 'npm install -g mintable'"
 set +e
+
+THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
+readonly CONFIG_FILE="${THIS_DIR}/mintable.jsonc" # config file is kept in this dir
+readonly DATA_DIR="${THIS_DIR}/data"              # where transactions/balances are kept
+
+[[ ! -d "$DATA_DIR" ]] && mkdir "$DATA_DIR"
 
 # get columns
 declare TERMINAL_COLUMNS
@@ -31,12 +49,6 @@ border=white,black
 textbox=white,black
 button=black,brightred
 '
-
-THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
-readonly CONFIG_FILE="${THIS_DIR}/mintable.jsonc" # config file is kept in this dir
-readonly DATA_DIR="${THIS_DIR}/data"              # where transactions/balances are kept
-
-[[ ! -d "$DATA_DIR" ]] && mkdir "$DATA_DIR"
 
 # mint with config
 mintc() {
@@ -87,7 +99,6 @@ commit_data_changes() {
 CMD="${1:?No command provided! Provide either \'setup\' or \'fetch\', or some other undlerying \'mintable\' command}"
 case "$CMD" in
 setup)
-	command -v mintable >/dev/null 2>&1 || npm install -g mintable
 	prompt "Setup plaid authentication tokens?" && {
 		mintc plaid-setup || exit $?
 	}
@@ -115,4 +126,4 @@ esac
 
 # update P_README
 # https://github.com/seanbreckenridge/pmark
-havecmd fd && havecmd pmark && fd '^P_README.md$' -X pmark >/dev/null
+havecmd pmark && find "$THIS_DIR" -name 'P_README.md' -exec pmark {} +

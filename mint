@@ -27,7 +27,7 @@ havecmd() {
 set -e
 havecmd tput
 havecmd figlet
-havecmd whiptaill "This is typically installable as 'newt' or 'libnewt'"
+havecmd whiptail "This is typically installable as 'newt' or 'libnewt'"
 havecmd mintable "Install by running: 'npm install -g mintable'"
 set +e
 

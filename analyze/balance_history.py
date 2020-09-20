@@ -24,6 +24,7 @@ def invert_credit_card(df_row):
         df_row["current"] = df_row["current"] * -1
     return df_row
 
+
 # get all balances from one snapshot
 def assets(s: Snapshot) -> pd.DataFrame:
 
@@ -32,7 +33,10 @@ def assets(s: Snapshot) -> pd.DataFrame:
     return df.apply(invert_credit_card, axis=1)
 
 
-def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
+SnapshotData = List[Tuple[pd.DataFrame, datetime]]
+
+
+def remove_outliers(account_snapshots) -> SnapshotData:
     """
     remove outlier snapshots (ones that might have happened while
     transfers were happening between different accounts)
@@ -40,9 +44,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
 
     click.echo("Processing {} snapshots...".format(len(account_snapshots)))
     # get data
-    acc_data: List[Tuple[pd.DataFrame, datetime]] = [
-        (assets(s), s.at) for s in account_snapshots
-    ]
+    acc_data: SnapshotData = [(assets(s), s.at) for s in account_snapshots]
     df: pd.DataFrame = pd.DataFrame.from_dict(
         [{"sum": d[0]["current"].sum(), "at": d[1]} for d in acc_data]
     )
@@ -73,7 +75,7 @@ def remove_outliers(account_snapshots) -> List[Tuple[pd.DataFrame, datetime]]:
     # vals_cleaned = np.delete(vals, outlier_indices)
 
     # cleaned snapshot data
-    acc_clean: List[Tuple[pd.DataFrame, datetime]] = [
+    acc_clean: SnapshotData = [
         a for i, a in enumerate(acc_data) if i not in outlier_indices
     ]
     # for index in outlier_indices:
@@ -89,7 +91,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     """
 
     # clean data
-    acc_clean = remove_outliers(account_snapshots)
+    acc_clean: SnapshotData = remove_outliers(account_snapshots)
 
     plt.style.use("dark_background")
     # graph each data point

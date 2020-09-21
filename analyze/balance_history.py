@@ -117,7 +117,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
     for acc, acc_list in account_history.items():
         ax.plot(secs, acc_list, label=acc)
 
-    ax.xaxis.set_major_formatter(mdate.DateFormatter("%d-%m-%y %H:%M:%S"))
+    ax.xaxis.set_major_formatter(mdate.DateFormatter("%Y-%m-%d %H:%M:%S"))
     ax.yaxis.set_major_formatter("${x:,}")
     fig.autofmt_xdate()
 

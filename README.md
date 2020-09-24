@@ -1,6 +1,6 @@
 ## mint
 
-Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/)
+Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/). Used as part of [HPI](https://github.com/seanbreckenridge/HPI)
 
 Requires:
  - `mintable` (`npm install -g mintable`)

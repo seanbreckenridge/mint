@@ -23,6 +23,7 @@ def color(msg: Any, color: str = "green"):
 
 
 # shorthand to print table
+# meant to be used in the REPL, just to speed things up
 def pr(df):
     print(df.to_string())
 

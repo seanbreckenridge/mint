@@ -4,7 +4,7 @@ Some configuration is split into private configuration files (to hide my own acc
 
 In addition to the `transactions.csv`/`balances.csv` file, this maintains `old_transactions.csv`, which are exported/wrangled data from other sources. Also maintains `manual_balances.csv`, which is in the same format as `balances.csv`, and is manually edited `python3 -m budget --edit-manual`.
 
-My data dir looks like:
+The data directory looks like:
 
 ```
 >>>PMARK

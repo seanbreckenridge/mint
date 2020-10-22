@@ -12,7 +12,7 @@ from ...log import logger
 try:
     # private configuration
     # default_account is just a string with matches the to_institution for an account. if CSV is missing account info,
-    # or manual transactions don't have an account assosiated with it, it uses that (probably just my typical
+    # or manual transactions don't have an account associated with it, it uses that (probably just my typical
     # checking account/cash)
     from .cleandata_conf import accounts_conf, default_account
 except ImportError:

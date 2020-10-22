@@ -225,7 +225,7 @@ def maps() -> List[Matcher]:
 
 
 # handles a single transaction, calls every lambda against it
-# in order (custom maps first, then defualt maps)
+# in order (custom maps first, then default maps)
 def transform_single(transact: Transaction) -> Optional[Transaction]:
     tr = transact
     for m in maps():

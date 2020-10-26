@@ -68,8 +68,7 @@ def clean_data(
         cl.from_account: cl.to_account for cl in cleaners
     }
     for tr in transactions:
-        assert tr.account is not None
-        if tr.account in replace_account:
+        if tr.account.strip() and tr.account in replace_account:
             tr.account = replace_account[tr.account]
 
     # validate data

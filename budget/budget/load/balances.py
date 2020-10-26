@@ -10,7 +10,7 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import Optional, List, Iterator, Type, Any, Set, Iterable, Tuple
 
-import git
+import git  # type: ignore[import]
 from more_itertools import strip
 
 
@@ -32,14 +32,6 @@ class Account:
 class Snapshot:
     accounts: List[Account]
     at: datetime
-
-
-def none_if_empty(s: str, to_type: Type = str) -> Optional[Any]:
-    ss = s.strip()
-    if ss == "":
-        return None
-    else:
-        return to_type(ss)
 
 
 def parse_float_or_zero(s: str) -> float:
@@ -64,14 +56,16 @@ def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Accoun
     bcsv = csv.reader(io.StringIO(balances_str))
     next(bcsv)  # ignore header row
     for r in bcsv:
+        assert r[6] is not None
+        acc_name = r[1].strip()
         yield Account(
             institution=r[0],
-            account=none_if_empty(r[1]),
+            account=None if bool(acc_name) else acc_name,
             account_type=r[2],
             current=float(r[3]),
             available=parse_float_or_zero(r[4]),
             limit=parse_float_or_zero(r[5]),
-            currency="USD" if r[6] is None else r[6],
+            currency="USD" if not bool(r[6].strip()) else r[6],
         )
 
 
@@ -86,9 +80,9 @@ def get_contents_at_commit(commit: git.Commit) -> Optional[Snapshot]:
     return Snapshot(accounts=account_data, at=commit.authored_datetime)
 
 
-def unique_snapshots(snapshots: Iterable[Snapshot]) -> Iterator[Account]:
+def unique_snapshots(snapshots: Iterable[Snapshot]) -> Iterator[Snapshot]:
     # remove snapshots which have the same account data but at different times
-    emitted: Set[Tuple[Account]] = set()
+    emitted: Set[Tuple[Account, ...]] = set()
     for snap in sorted(snapshots, key=lambda s: s.at):
         key = tuple(snap.accounts)
         if key not in emitted:
@@ -102,5 +96,5 @@ def unique_snapshots(snapshots: Iterable[Snapshot]) -> Iterator[Account]:
 def generate_account_history(ddir: Path) -> Iterator[Snapshot]:
     repo = git.Repo(str(ddir))
     yield from unique_snapshots(
-        strip(map(get_contents_at_commit, repo.iter_commits()), lambda s: s is None)
+        strip(map(get_contents_at_commit, repo.iter_commits()), lambda s: s is None)  # type: ignore
     )

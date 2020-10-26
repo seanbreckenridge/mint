@@ -3,11 +3,12 @@
 Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/). Used as part of [HPI](https://github.com/seanbreckenridge/HPI)
 
 Requires:
- - `mintable` (`npm install -g mintable`)
- - `whiptail` (typically installable as `newt` or `libnewt`)
- - `figlet`
- - `bash` 4.0+
- - `python` 3.7+
+
+- `mintable` (`npm install -g mintable`)
+- `whiptail` (typically installable as `newt` or `libnewt`)
+- `figlet`
+- `bash` 4.0+
+- `python` 3.7+
 
 I use [plaid](http://plaid.com/) to get the account information, and export those to local CSV files.
 
@@ -38,12 +39,8 @@ Currently this:
 
 [`analyze`](./analyze/):
 
-  - has a account/transaction summary, summarizes spending categories over a couple time periods
-  - uses the git history to create a graph of account balances over time, removing outliers that might have occurred because of account transfers.
-
-Need to:
-
-- create code to define budgets, and compare that against transactions
+- has a account/transaction summary, summarizes spending categories over a couple time periods
+- uses the git history to create a graph of account balances over time, removing outliers that might have occurred because of account transfers.
 
 ---
 

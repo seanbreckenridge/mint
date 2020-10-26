@@ -1,3 +1,4 @@
+# type: ignore
 import warnings
 
 from functools import lru_cache
@@ -226,15 +227,14 @@ def maps() -> List[Matcher]:
 
 # handles a single transaction, calls every lambda against it
 # in order (custom maps first, then default maps)
-def transform_single(transact: Transaction) -> Optional[Transaction]:
-    tr = transact
+def transform_single(tr: Transaction) -> Optional[Transaction]:
     for m in maps():
         # try with this pattern
         resp, tr_func = m(tr)
         if resp is True:  # this transaction matched the predicate from the Matcher
             # call the function so the transaction is edited, and reassign it to tr
             # reassign so other matchers might apply to this, and continue matching
-            tr = tr_func()[-1]
+            tr = tr_func()[-1]  # type: ignore
         # if the tr_func returned none, the transaction should exit early from
         # comparing against other matchers; this should be ignored
         if tr is None:

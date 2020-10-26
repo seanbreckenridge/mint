@@ -1,9 +1,9 @@
-from typing import NamedTuple
+from typing import NamedTuple, Optional
 
 # data cleaning to replace fields on accounts
 class CleanAccount(NamedTuple):
     from_institution: str
-    from_account: str
+    from_account: Optional[str]
     from_account_type: str
     to_institution: str
     to_account: str

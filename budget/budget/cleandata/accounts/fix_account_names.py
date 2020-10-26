@@ -1,7 +1,7 @@
 import warnings
 
 from itertools import chain
-from typing import Tuple, List, Dict, Set
+from typing import Tuple, List, Dict, Set, Optional
 
 
 from .model import CleanAccount
@@ -18,8 +18,8 @@ try:
 except ImportError:
     warnings.warn("Could not import cleandata_conf.py")
     # no extra personal config, so just use defaults
-    accounts_conf = lambda: []
-    default_account: str = "<NO ACCOUNT>"
+    accounts_conf = lambda: []  # type: ignore[return-value, assignment]
+    default_account: str = "<NO ACCOUNT>"  # type: ignore[no-redef]
 
 # what clean_data uses to get CleanAccount information, to clean the data
 # define a function in ./cleandata_conf.py called accounts_conf which
@@ -33,7 +33,7 @@ def clean_data(
 ) -> Tuple[List[Snapshot], List[Transaction]]:
     cleaners: List[CleanAccount] = get_configuration()
     # create O(1) access, use non-nullable fields
-    cleaner_map: Dict[Tuple[str, str, str], CleanAccount] = {
+    cleaner_map: Dict[Tuple[str, Optional[str], str], CleanAccount] = {
         (cl.from_institution, cl.from_account, cl.from_account_type): cl
         for cl in cleaners
     }
@@ -64,17 +64,18 @@ def clean_data(
         cleaned_balances.append(Snapshot(at=snapshot.at, accounts=cleaned_accounts))
 
     # replace account names on transactions
-    replace_account: Dict[str, str] = {
+    replace_account: Dict[Optional[str], str] = {
         cl.from_account: cl.to_account for cl in cleaners
     }
     for tr in transactions:
-        if tr.account is not None and tr.account in replace_account:
+        assert tr.account is not None
+        if tr.account in replace_account:
             tr.account = replace_account[tr.account]
 
     # validate data
     # get names of all the accounts, including any manual ones
     account_names: Set[str] = set(
-        chain(*[[acc.account for acc in cl.accounts] for cl in cleaned_balances])
+        chain(*[[acc.account for acc in cl.accounts] for cl in cleaned_balances])  # type: ignore[arg-type]
     )
     # make sure every transaction is attached to an account
     # could just define a 'cash' institution if you wanted to keep track of money in wallet

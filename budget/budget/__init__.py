@@ -10,9 +10,9 @@ from .load.transactions import (
 )  # , debug_duplicate_transactions
 from .load.balances import generate_account_history, Snapshot
 
-from .cleandata.accounts.fix_account_names import clean_data
-from .cleandata.transactions.transform import transform_all as transform
-from .cleandata.transactions.meta_categories import META_CATEGORIES
+from .cleandata.accounts.fix_account_names import clean_data  # type: ignore
+from .cleandata.transactions.transform import transform_all as transform  # type: ignore
+from .cleandata.transactions.meta_categories import META_CATEGORIES  # type: ignore
 
 
 def get_data_dir() -> Path:

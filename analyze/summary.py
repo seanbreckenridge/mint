@@ -1,41 +1,49 @@
 from datetime import date, timedelta
-from typing import Union, Any
+from typing import Union, Any, List, Dict, Optional, Sequence
 
 import click
-import pandas as pd
-from pyfiglet import figlet_format
+import pandas as pd  # type: ignore[import]
+from pyfiglet import figlet_format  # type: ignore[import]
 
 import budget
+from budget import Transaction, Snapshot
 
 
-def banner(msg):
+def banner(msg: str) -> None:
     click.echo("```")
     click.secho(figlet_format(msg, "thin"), fg="blue")
     click.echo("```")
 
 
-def hr():
+def hr() -> None:
     click.echo("\n{}\n".format("-" * 10))
 
 
-def color(msg: Any, color: str = "green"):
+def color(msg: str, color: str = "green") -> str:
     return click.style(f"*{msg}*", fg=color)
 
 
 # shorthand to print table
 # meant to be used in the REPL, just to speed things up
-def pr(df):
+def pr(df: pd.DataFrame) -> None:
     print(df.to_string())
 
 
 # helper function to print a table
-def print_df(df, *, index=False, rename_cols={}, sort_by=None, ascending=False):
+def print_df(
+    df: pd.DataFrame,
+    *,
+    index: bool = False,
+    rename_cols: Dict[str, str] = {},
+    sort_by: Optional[Sequence[str]] = None,
+    ascending: bool = False,
+) -> None:
     if sort_by is not None and isinstance(sort_by, list):
         df = df.sort_values(sort_by, ascending=ascending)
     click.echo(df.rename(columns=rename_cols).to_markdown(index=index))
 
 
-def account_summary(account_snapshots):
+def account_summary(account_snapshots: List[Snapshot]) -> pd.DataFrame:
     hr()
     account = account_snapshots[-1].accounts
     ### ACCOUNT SUMMARY
@@ -85,17 +93,17 @@ def account_summary(account_snapshots):
 today = date.today()
 
 
-def _get_timeframe(transactions, timeframe):
+def _get_timeframe(transactions: pd.DataFrame, timeframe: timedelta) -> pd.DataFrame:
     return transactions[today - transactions["on"] < timeframe]
 
 
 def describe_spending(
-    transactions,
+    transactions: pd.DataFrame,
     title: str,
     by: str = "meta_category",
     print_count: Union[int, bool] = 10,
-    display_categories=True,
-):
+    display_categories: bool = True,
+) -> pd.DataFrame:
     hr()
     sorted_transactions = transactions.sort_values(["amount"], ascending=False).drop(
         ["meta_category"], axis=1
@@ -128,7 +136,7 @@ def describe_spending(
     return sorted_transactions
 
 
-def recent_spending(transactions):
+def recent_spending(transactions: List[Transaction]) -> pd.DataFrame:
     _tr = pd.DataFrame.from_dict(transactions)
 
     # remove transfers between accounts/income
@@ -152,7 +160,7 @@ def recent_spending(transactions):
 
 @click.command()
 @click.option("--repl", is_flag=True, default=False)
-def main(repl):
+def main(repl: bool) -> None:
     account_snapshots, transactions = budget.data()
 
     spend = recent_spending(transactions)
@@ -163,7 +171,7 @@ def main(repl):
 
     if repl:
         click.secho("Use 'acc' and 'spend' to interact", fg="green")
-        import IPython
+        import IPython  # type: ignore
 
         IPython.embed()
 

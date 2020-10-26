@@ -2,10 +2,10 @@ import csv
 import io
 from datetime import date, datetime
 from pathlib import Path
-from typing import List, Iterator, Iterable, Optional, Set, Tuple
+from typing import List, Iterator, Iterable, Optional, Set, Tuple, Sequence, Union
 from dataclasses import dataclass
 
-import git
+import git  # type: ignore[import]
 
 from ..log import logger
 
@@ -28,15 +28,15 @@ STATIC_TRANSACTION_FILES = [
 ]
 
 
-def read_transaction_obj(file_obj) -> Iterator[List[str]]:
-    cr = csv.reader(file_obj)
+def read_transaction_obj(file_obj: io.IOBase) -> Iterator[List[str]]:
+    cr = csv.reader(file_obj)  # type: ignore
     next(cr)  # ignore headers
     yield from cr
 
 
 # read the transactions.csv history and return unique transactions
 def read_transactions_history(repo: git.Repo) -> Iterator[Transaction]:
-    emitted_lines: Set[Tuple[str]] = set()
+    emitted_lines: Set[Tuple[str, ...]] = set()
     for commit in repo.iter_commits():
         try:
             blob = commit.tree / TRANSACTION_FILE
@@ -46,9 +46,9 @@ def read_transactions_history(repo: git.Repo) -> Iterator[Transaction]:
             transactions_str: str = f.read().decode("utf-8")
         # add each line from this commit to the set
         # convert to tuple so its hashable
-        for line in map(tuple, read_transaction_obj(io.StringIO(transactions_str))):
+        for line in map(tuple, read_transaction_obj(io.StringIO(transactions_str))):  # type: ignore[arg-type]
             if line not in emitted_lines:
-                emitted_lines.add(line)
+                emitted_lines.add(line)  # type: ignore
             else:
                 logger.debug(
                     f"while parsing transactions git history: {line} already in set"
@@ -61,7 +61,7 @@ def read_transactions(ddir: Path) -> Iterator[Transaction]:
         full_tfile = ddir / tfile
         if full_tfile.exists():
             with full_tfile.open(newline="") as tr:
-                yield from map(parse_transaction, read_transaction_obj(tr))
+                yield from map(parse_transaction, read_transaction_obj(tr))  # type: ignore[arg-type]
         else:
             logger.warning(
                 "File at {} doesn't exist, ignoring...".format(str(full_tfile))
@@ -69,7 +69,7 @@ def read_transactions(ddir: Path) -> Iterator[Transaction]:
     yield from read_transactions_history(git.Repo(str(ddir)))
 
 
-def parse_transaction(td: Iterable[str]) -> Transaction:
+def parse_transaction(td: Sequence[str]) -> Transaction:
     return Transaction(
         on=date(**dict(zip(("year", "month", "day"), map(int, td[0].split("-"))))),
         amount=float(td[1]),
@@ -82,7 +82,7 @@ def parse_transaction(td: Iterable[str]) -> Transaction:
 def debug_duplicate_transactions(
     transactions: Iterable[Transaction],
 ) -> Iterator[Transaction]:
-    emitted: Set[Tuple[datetime, float, str]] = set()
+    emitted: Set[Tuple[date, float, str]] = set()
     for tr in sorted(transactions, key=lambda t: t.on):
         key = (tr.on, tr.amount, tr.name)
         if key not in emitted:

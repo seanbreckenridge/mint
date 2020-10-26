@@ -1,14 +1,14 @@
-from typing import Dict, Set, Tuple, List
+from typing import Dict, Set, Tuple, List, Callable, Any
 from datetime import datetime
 from itertools import chain
 
 import click
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdate
-from scipy import stats
-from tzlocal import get_localzone
+import numpy as np  # type: ignore[import]
+import pandas as pd  # type: ignore[import]
+import matplotlib.pyplot as plt  # type: ignore[import]
+import matplotlib.dates as mdate  # type: ignore[import]
+from scipy import stats  # type: ignore[import]
+from tzlocal import get_localzone  # type: ignore[import]
 
 from budget import data, Snapshot
 
@@ -19,7 +19,7 @@ def fix_timestamp(t: datetime) -> datetime:
     return tz.localize(datetime.fromtimestamp(t.timestamp()))
 
 
-def invert_credit_card(df_row):
+def invert_credit_card(df_row):  # type: ignore
     if df_row["account_type"] == "credit card":
         df_row["current"] = df_row["current"] * -1
     return df_row
@@ -36,7 +36,7 @@ def assets(s: Snapshot) -> pd.DataFrame:
 SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 
 
-def remove_outliers(account_snapshots) -> SnapshotData:
+def remove_outliers(account_snapshots: List[Snapshot]) -> SnapshotData:
     """
     remove outlier snapshots (ones that might have happened while
     transfers were happening between different accounts)
@@ -85,7 +85,7 @@ def remove_outliers(account_snapshots) -> SnapshotData:
     return acc_clean
 
 
-def graph_account_balances(account_snapshots, graph: bool) -> None:
+def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> None:
     """
     plot each account across the git hitsory
     """
@@ -135,7 +135,7 @@ def graph_account_balances(account_snapshots, graph: bool) -> None:
 
 @click.command()
 @click.option("--show", default=False, is_flag=True)
-def main(show):
+def main(show: bool) -> None:
     account_snapshots, _ = data()
     account_snapshots.sort(key=lambda s: s.at)
     graph_account_balances(account_snapshots, show)

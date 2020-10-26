@@ -12,8 +12,8 @@ import csv
 from pathlib import Path
 from typing import List
 
-import pick
-import vimbuffer
+import pick  # type: ignore[import]
+import vimbuffer  # type: ignore[import]
 
 # main entrypoint
 #
@@ -21,13 +21,13 @@ import vimbuffer
 # edit the line in vim
 # checks to make sure the ints are still ints
 # write back
-def edit_manual_balances(bfile: Path):
+def edit_manual_balances(bfile: Path) -> None:
     before_data: List[str] = []
     with bfile.open(newline="") as bf:
         bf_reader = csv.reader(bf)
         header: List[str] = next(bf_reader)
         for line in bf_reader:
-            before_data.append(line)
+            before_data.append(line)  # type: ignore
 
     # ask user for input
     try:

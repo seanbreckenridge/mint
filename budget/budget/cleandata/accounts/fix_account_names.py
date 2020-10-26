@@ -1,7 +1,7 @@
 import warnings
 
 from itertools import chain
-from typing import Tuple, List, Dict, Set, Optional
+from typing import Tuple, List, Dict, Set
 
 
 from .model import CleanAccount
@@ -33,7 +33,7 @@ def clean_data(
 ) -> Tuple[List[Snapshot], List[Transaction]]:
     cleaners: List[CleanAccount] = get_configuration()
     # create O(1) access, use non-nullable fields
-    cleaner_map: Dict[Tuple[str, Optional[str], str], CleanAccount] = {
+    cleaner_map: Dict[Tuple[str, str, str], CleanAccount] = {
         (cl.from_institution, cl.from_account, cl.from_account_type): cl
         for cl in cleaners
     }
@@ -64,7 +64,7 @@ def clean_data(
         cleaned_balances.append(Snapshot(at=snapshot.at, accounts=cleaned_accounts))
 
     # replace account names on transactions
-    replace_account: Dict[Optional[str], str] = {
+    replace_account: Dict[str, str] = {
         cl.from_account: cl.to_account for cl in cleaners
     }
     for tr in transactions:

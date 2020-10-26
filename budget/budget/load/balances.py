@@ -17,7 +17,7 @@ from more_itertools import strip
 @dataclass
 class Account:
     institution: str  # company
-    account: Optional[str]  # sub-account with company, if applicable
+    account: str  # sub-account with company, if applicable
     account_type: str  # checking/brokerage/savings
     current: float  # money in account/balance
     available: Optional[float]  # how much available on limit
@@ -57,10 +57,9 @@ def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Accoun
     next(bcsv)  # ignore header row
     for r in bcsv:
         assert r[6] is not None
-        acc_name = r[1].strip()
         yield Account(
             institution=r[0],
-            account=None if bool(acc_name) else acc_name,
+            account=r[1].strip(),
             account_type=r[2],
             current=float(r[3]),
             available=parse_float_or_zero(r[4]),

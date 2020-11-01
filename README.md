@@ -35,7 +35,7 @@ This:
 - loads all the balance snapshots/transactions into memory (using git history to find possibly overwritten ones) and drops you into `IPython`
 - cleans up transaction data; has patterns to fix transaction names/sort into meta-categories
 
-[`budget.analyze`](./analyze/):
+[`budget.analyze`](./budget/budget/analyze):
 
 - has a account/transaction summary, summarizes spending categories over a couple time periods
 - uses the git history to create a graph of account balances over time, removing outliers that might have occurred because of account transfers.

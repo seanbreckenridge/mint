@@ -33,7 +33,8 @@ def edit_manual() -> None:
 )
 @click.option("--repl", default=False, is_flag=True, help="Drop into repl")
 @click.option("--df", default=False, is_flag=True, help="Use dataframe in REPL")
-def accounts(graph: bool, repl: bool, df: bool) -> None:
+@click.option("--debug", default=False, is_flag=True, help="Print duplicate transactions that are removed")
+def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     """
     Show a summary/graph of the current/past accounts balances
     """
@@ -41,7 +42,7 @@ def accounts(graph: bool, repl: bool, df: bool) -> None:
     from .analyze.balance_history import graph_account_balances
 
     if graph:
-        account_snapshots, _ = data()
+        account_snapshots, _ = data(debug=debug)
         account_snapshots.sort(key=lambda s: s.at)
         graph_account_balances(account_snapshots, graph)
         sys.exit(0)
@@ -67,14 +68,15 @@ def accounts(graph: bool, repl: bool, df: bool) -> None:
     default=False,
     help="Drop into a repl with access to the accounts/spending",
 )
-def summary(repl: bool) -> None:
+@click.option("--debug", default=False, is_flag=True, help="Print duplicate transactions that are removed")
+def summary(repl: bool, debug: bool) -> None:
     """
     Prints a summary of current accounts/recent transactions
     """
 
     from .analyze.summary import recent_spending, account_summary
 
-    account_snapshots, transactions = data()
+    account_snapshots, transactions = data(debug=debug)
 
     spend = recent_spending(transactions)
     acc = account_summary(account_snapshots)

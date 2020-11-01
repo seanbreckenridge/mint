@@ -27,14 +27,14 @@ def cleaned_snapshots(sorted_snapshots: Optional[List[Snapshot]] = None) -> Iter
             yield sn
 
 
-def cleaned_snapshots_df(sorted_snapshots: Optional[List[Snapshot]] = None) -> SnapshotData:
+def cleaned_snapshots_df(sorted_snapshots: Optional[List[Snapshot]] = None, debug: bool = False) -> SnapshotData:
     snapshots: List[Snapshot] = []
     if sorted_snapshots is None:
-        snapshots, _ = data()
+        snapshots, _ = data(debug=debug)
         snapshots.sort(key=lambda s: s.at)
     else:
         snapshots = sorted_snapshots
-    cleaned_acc: SnapshotData = remove_outliers(snapshots, print=False)
+    cleaned_acc: SnapshotData = remove_outliers(snapshots, print=debug)
     return cleaned_acc
 
 

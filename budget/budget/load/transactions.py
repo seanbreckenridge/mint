@@ -2,7 +2,7 @@ import csv
 import io
 from datetime import date
 from pathlib import Path
-from typing import List, Iterator, Iterable, Optional, Set, Tuple, Sequence
+from typing import List, Iterator, Optional, Set, Tuple, Sequence
 from dataclasses import dataclass
 
 import git  # type: ignore[import]
@@ -79,14 +79,17 @@ def parse_transaction(td: Sequence[str]) -> Transaction:
     )
 
 
-def debug_duplicate_transactions(
-    transactions: Iterable[Transaction],
+def remove_duplicate_transactions(
+    transactions: List[Transaction],
+    debug: bool = False,
 ) -> Iterator[Transaction]:
-    emitted: Set[Tuple[date, float, str]] = set()
+    emitted: Set[Tuple[date, float]] = set()
     for tr in sorted(transactions, key=lambda t: t.on):
-        key = (tr.on, tr.amount, tr.name)
+        # TODO: use dice coefficient on lowered transaction name?
+        key = (tr.on, tr.amount)
         if key not in emitted:
             emitted.add(key)
             yield tr
         else:
-            print("removing transaction {}".format(tr))
+            if debug:
+                print("removing transaction {}".format(tr))

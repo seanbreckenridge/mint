@@ -7,7 +7,8 @@ from .log import logger
 from .load.transactions import (
     Transaction,
     read_transactions,
-)  # , debug_duplicate_transactions
+    remove_duplicate_transactions,
+)
 from .load.balances import generate_account_history, Snapshot
 
 from .cleandata.accounts.fix_account_names import clean_data  # type: ignore
@@ -22,7 +23,7 @@ def get_data_dir() -> Path:
         raise RuntimeError("No MINT_DATA environment variable!")
 
 
-def data(ddir: Optional[Path] = None) -> Tuple[List[Snapshot], List[Transaction]]:
+def data(ddir: Optional[Path] = None, debug: bool = False) -> Tuple[List[Snapshot], List[Transaction]]:
 
     if ddir is None:
         ddir = get_data_dir()
@@ -45,6 +46,6 @@ def data(ddir: Optional[Path] = None) -> Tuple[List[Snapshot], List[Transaction]
             )
 
     # debug duplicates
-    # transactions = list(debug_duplicate_transactions(transactions))
+    transactions = list(remove_duplicate_transactions(transactions, debug=debug))
 
     return balance_snapshots, transactions

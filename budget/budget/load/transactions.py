@@ -1,8 +1,8 @@
 import csv
 import io
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
-from typing import List, Iterator, Iterable, Optional, Set, Tuple, Sequence, Union
+from typing import List, Iterator, Iterable, Optional, Set, Tuple, Sequence
 from dataclasses import dataclass
 
 import git  # type: ignore[import]

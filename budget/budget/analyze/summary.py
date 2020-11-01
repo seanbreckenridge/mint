@@ -1,12 +1,11 @@
 from datetime import date, timedelta
-from typing import Union, Any, List, Dict, Optional, Sequence
+from typing import Union, List, Dict, Optional, Sequence
 
 import click
 import pandas as pd  # type: ignore[import]
 from pyfiglet import figlet_format  # type: ignore[import]
 
-import budget
-from budget import Transaction, Snapshot
+from .. import Transaction, Snapshot
 
 
 def banner(msg: str) -> None:
@@ -157,24 +156,3 @@ def recent_spending(transactions: List[Transaction]) -> pd.DataFrame:
     describe_spending(last_30_days, "last 30 days", print_count=True, by="category")
     return spending
 
-
-@click.command()
-@click.option("--repl", is_flag=True, default=False)
-def main(repl: bool) -> None:
-    account_snapshots, transactions = budget.data()
-
-    spend = recent_spending(transactions)
-    acc = account_summary(account_snapshots)
-
-    # sort by date
-    spend.sort_values(["on"], inplace=True)
-
-    if repl:
-        click.secho("Use 'acc' and 'spend' to interact", fg="green")
-        import IPython  # type: ignore
-
-        IPython.embed()
-
-
-if __name__ == "__main__":
-    main()

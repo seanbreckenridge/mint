@@ -1,4 +1,4 @@
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 # data cleaning to replace fields on accounts
 class CleanAccount(NamedTuple):

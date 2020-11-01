@@ -8,7 +8,7 @@ from pathlib import Path
 from datetime import datetime
 
 from dataclasses import dataclass
-from typing import Optional, List, Iterator, Type, Any, Set, Iterable, Tuple
+from typing import Optional, List, Iterator, Set, Iterable, Tuple
 
 import git  # type: ignore[import]
 from more_itertools import strip

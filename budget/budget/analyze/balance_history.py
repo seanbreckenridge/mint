@@ -1,4 +1,4 @@
-from typing import Dict, Set, Tuple, List, Callable, Any
+from typing import Dict, Set, Tuple, List
 from datetime import datetime
 from itertools import chain
 
@@ -10,7 +10,7 @@ import matplotlib.dates as mdate  # type: ignore[import]
 from scipy import stats  # type: ignore[import]
 from tzlocal import get_localzone  # type: ignore[import]
 
-from budget import data, Snapshot
+from .. import Snapshot
 
 tz = get_localzone()
 
@@ -36,13 +36,14 @@ def assets(s: Snapshot) -> pd.DataFrame:
 SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 
 
-def remove_outliers(account_snapshots: List[Snapshot]) -> SnapshotData:
+def remove_outliers(account_snapshots: List[Snapshot], print: bool = True) -> SnapshotData:
     """
     remove outlier snapshots (ones that might have happened while
     transfers were happening between different accounts)
     """
 
-    click.echo("Processing {} snapshots...".format(len(account_snapshots)))
+    if print:
+        click.echo("Processing {} snapshots...".format(len(account_snapshots)))
     # get data
     acc_data: SnapshotData = [(assets(s), s.at) for s in account_snapshots]
     df: pd.DataFrame = pd.DataFrame.from_dict(
@@ -81,7 +82,8 @@ def remove_outliers(account_snapshots: List[Snapshot]) -> SnapshotData:
     # for index in outlier_indices:
     # print("Removing outlier value ({}) :\n {}".format(residuals[index], acc_data[index]))
     # pass
-    click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
+    if print:
+        click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
     return acc_clean
 
 
@@ -132,14 +134,3 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
     if graph:
         plt.show()
 
-
-@click.command()
-@click.option("--show", default=False, is_flag=True)
-def main(show: bool) -> None:
-    account_snapshots, _ = data()
-    account_snapshots.sort(key=lambda s: s.at)
-    graph_account_balances(account_snapshots, show)
-
-
-if __name__ == "__main__":
-    main()

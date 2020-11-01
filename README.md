@@ -74,7 +74,7 @@ alias budget-history='budget accounts --graph'
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```
 
-`budget-summary` emits markdown tables/formatting, so it can be used nicely with a terminal markdown viewer like [`glow`](https://github.com/charmbracelet/glow):
+`budget summary` emits markdown tables/formatting, so it can be used nicely with a terminal markdown viewer like [`glow`](https://github.com/charmbracelet/glow):
 
 ```shell
 # ( defined in my aliases/functions file )

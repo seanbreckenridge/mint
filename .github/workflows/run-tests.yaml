@@ -22,8 +22,11 @@ jobs:
       - name: Install packages
         run: |
           python -m pip install --upgrade pip
-          pip install 'budget'
-          pip install mypy
+          pip install ./budget
+          pip install pytest mypy
+      - name: Run pytest
+        run: |
+          pytest ./budget/tests
       - name: Run mypy
         run: |
           mypy ./budget/budget

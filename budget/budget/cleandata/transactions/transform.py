@@ -9,7 +9,7 @@ from . import Matcher, Transaction, desc
 try:
     # create a file called ./maps_conf.py
     # which has custom_maps to convert transactions
-    from .maps_conf import custom_maps
+    from .maps_conf import custom_maps  # type: ignore[import]
 except ImportError:
     warnings.warn("Could not import maps_conf.py")
     custom_maps = lambda: []

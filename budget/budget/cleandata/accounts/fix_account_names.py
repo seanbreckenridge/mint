@@ -14,7 +14,7 @@ try:
     # default_account is just a string with matches the to_institution for an account. if CSV is missing account info,
     # or manual transactions don't have an account associated with it, it uses that (probably just my typical
     # checking account/cash)
-    from .cleandata_conf import accounts_conf, default_account
+    from .cleandata_conf import accounts_conf, default_account  # type: ignore[import]
 except ImportError:
     warnings.warn("Could not import cleandata_conf.py")
     # no extra personal config, so just use defaults

@@ -69,7 +69,7 @@ Shorthands I add to my shell config:
 ```shell
 # (~/Repos/mint is where I keep the cloned dir)
 export MINT_DATA="${HOME}/Repos/mint/data"
-alias budget-history='budget accounts --graph'
+alias budget-history='python3 -m budget accounts --graph'
 # to edit the account/transaction map information
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'
 ```

@@ -10,7 +10,7 @@ requirements = [
     "pyfiglet",
     "pandas",
     "tabulate",
-    "vimbuffer",
+    "vimbuffer>=0.1.3",
     "scipy",
     "numpy",
     "matplotlib",

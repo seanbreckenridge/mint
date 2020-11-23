@@ -124,6 +124,3 @@ fetch)
 	;;
 esac
 
-# update P_README
-# https://github.com/seanbreckenridge/pmark
-havecmd pmark && find "$THIS_DIR" -name 'P_README.md' -exec pmark {} +

@@ -10,15 +10,15 @@ havecmd() {
 	# error if first argument isn't provided
 	BINARY="${1:?Must provide command to check}"
 	# the commend exists, exit with 0 (success!)
-	if command -v "$BINARY" >/dev/null 2>&1; then
+	if command -v "${BINARY}" >/dev/null 2>&1; then
 		return 0
 	else
 		# construct error message
-		ERRMSG="'$script_name' requires '$BINARY', could not find that on your \$PATH"
+		ERRMSG="'${script_name}' requires '${BINARY}', could not find that on your \$PATH"
 		if [[ -n "$2" ]]; then
-			ERRMSG="$ERRMSG. $2"
+			ERRMSG="${ERRMSG}. $2"
 		fi
-		printf '%s\n' "$ERRMSG" 1>&2
+		printf '%s\n' "${ERRMSG}" 1>&2
 		return 1
 	fi
 }
@@ -35,7 +35,7 @@ THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 readonly CONFIG_FILE="${THIS_DIR}/mintable.jsonc" # config file is kept in this dir
 readonly DATA_DIR="${THIS_DIR}/data"              # where transactions/balances are kept
 
-[[ ! -d "$DATA_DIR" ]] && mkdir "$DATA_DIR"
+[[ ! -d "${DATA_DIR}" ]] && mkdir "${DATA_DIR}"
 
 # get columns
 declare TERMINAL_COLUMNS
@@ -52,7 +52,7 @@ button=black,brightred
 
 # mint with config
 mintc() {
-	mintable "$@" --config-file "$CONFIG_FILE"
+	mintable "$@" --config-file "${CONFIG_FILE}"
 	return $?
 }
 
@@ -62,7 +62,7 @@ prompt() {
 	width="$(wc -c <<<"$1")"
 	# or default to 1/3rd of the terminal width
 	((width < TERMINAL_COLUMNS / 3)) && width="$((TERMINAL_COLUMNS / 3))"
-	whiptail --yesno --defaultno "$1" 8 "$width"
+	whiptail --yesno --defaultno "$1" 8 "${width}"
 	return $?
 }
 
@@ -82,7 +82,7 @@ setup_data_version_control() {
 }
 
 commit_data_changes() {
-	if cd "$DATA_DIR"; then
+	if cd "${DATA_DIR}"; then
 		# add any changes to a local git repo
 		git add ./*.csv
 		if git commit -m "transaction updates"; then
@@ -97,7 +97,7 @@ commit_data_changes() {
 }
 
 CMD="${1:?No command provided! Provide either \'setup\' or \'fetch\', or some other undlerying \'mintable\' command}"
-case "$CMD" in
+case "${CMD}" in
 setup)
 	prompt "Setup plaid authentication tokens?" && {
 		mintc plaid-setup || exit $?
@@ -123,4 +123,3 @@ fetch)
 	mintc "$@" || exit $?
 	;;
 esac
-

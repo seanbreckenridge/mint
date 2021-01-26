@@ -92,4 +92,4 @@ def summary(repl: bool, debug: bool) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    main(prog_name="budget")

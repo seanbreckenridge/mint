@@ -36,7 +36,9 @@ def assets(s: Snapshot) -> pd.DataFrame:
 SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 
 
-def remove_outliers(account_snapshots: List[Snapshot], print: bool = True) -> SnapshotData:
+def remove_outliers(
+    account_snapshots: List[Snapshot], print: bool = True
+) -> SnapshotData:
     """
     remove outlier snapshots (ones that might have happened while
     transfers were happening between different accounts)
@@ -83,7 +85,9 @@ def remove_outliers(account_snapshots: List[Snapshot], print: bool = True) -> Sn
     # print("Removing outlier value ({}) :\n {}".format(residuals[index], acc_data[index]))
     # pass
     if print:
-        click.echo("Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean)))
+        click.echo(
+            "Removed {} outlier snapshots.".format(len(acc_data) - len(acc_clean))
+        )
     return acc_clean
 
 
@@ -133,4 +137,3 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
 
     if graph:
         plt.show()
-

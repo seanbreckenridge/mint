@@ -155,4 +155,3 @@ def recent_spending(transactions: List[Transaction]) -> pd.DataFrame:
     # print all transactions in last 30 days
     describe_spending(last_30_days, "last 30 days", print_count=True, by="category")
     return spending
-

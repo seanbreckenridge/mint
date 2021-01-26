@@ -33,7 +33,12 @@ def edit_manual() -> None:
 )
 @click.option("--repl", default=False, is_flag=True, help="Drop into repl")
 @click.option("--df", default=False, is_flag=True, help="Use dataframe in REPL")
-@click.option("--debug", default=False, is_flag=True, help="Print duplicate transactions that are removed")
+@click.option(
+    "--debug",
+    default=False,
+    is_flag=True,
+    help="Print duplicate transactions that are removed",
+)
 def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     """
     Show a summary/graph of the current/past accounts balances
@@ -68,7 +73,12 @@ def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     default=False,
     help="Drop into a repl with access to the accounts/spending",
 )
-@click.option("--debug", default=False, is_flag=True, help="Print duplicate transactions that are removed")
+@click.option(
+    "--debug",
+    default=False,
+    is_flag=True,
+    help="Print duplicate transactions that are removed",
+)
 def summary(repl: bool, debug: bool) -> None:
     """
     Prints a summary of current accounts/recent transactions

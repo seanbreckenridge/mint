@@ -51,7 +51,7 @@ python3 -m budget
 ```
 
 ```
-Usage: __main__.py [OPTIONS] COMMAND [ARGS]...
+Usage: budget [OPTIONS] COMMAND [ARGS]...
 
   Interact with my budget!
 

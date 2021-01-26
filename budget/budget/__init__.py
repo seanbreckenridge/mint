@@ -23,7 +23,9 @@ def get_data_dir() -> Path:
         raise RuntimeError("No MINT_DATA environment variable!")
 
 
-def data(ddir: Optional[Path] = None, debug: bool = False) -> Tuple[List[Snapshot], List[Transaction]]:
+def data(
+    ddir: Optional[Path] = None, debug: bool = False
+) -> Tuple[List[Snapshot], List[Transaction]]:
 
     if ddir is None:
         ddir = get_data_dir()

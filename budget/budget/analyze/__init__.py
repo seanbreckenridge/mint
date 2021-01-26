@@ -11,7 +11,9 @@ from .. import data, Transaction, Snapshot
 from .balance_history import remove_outliers, SnapshotData
 
 
-def cleaned_snapshots(sorted_snapshots: Optional[List[Snapshot]] = None) -> Iterator[Snapshot]:
+def cleaned_snapshots(
+    sorted_snapshots: Optional[List[Snapshot]] = None,
+) -> Iterator[Snapshot]:
     snapshots: List[Snapshot] = []
     if sorted_snapshots is None:
         snapshots, _ = data()
@@ -27,7 +29,9 @@ def cleaned_snapshots(sorted_snapshots: Optional[List[Snapshot]] = None) -> Iter
             yield sn
 
 
-def cleaned_snapshots_df(sorted_snapshots: Optional[List[Snapshot]] = None, debug: bool = False) -> SnapshotData:
+def cleaned_snapshots_df(
+    sorted_snapshots: Optional[List[Snapshot]] = None, debug: bool = False
+) -> SnapshotData:
     snapshots: List[Snapshot] = []
     if sorted_snapshots is None:
         snapshots, _ = data(debug=debug)
@@ -38,7 +42,9 @@ def cleaned_snapshots_df(sorted_snapshots: Optional[List[Snapshot]] = None, debu
     return cleaned_acc
 
 
-def transactions_df(sorted_transactions: Optional[List[Transaction]] = None) -> pd.DataFrame:
+def transactions_df(
+    sorted_transactions: Optional[List[Transaction]] = None,
+) -> pd.DataFrame:
     transactions: List[Transaction] = []
     if sorted_transactions is None:
         _, transactions = data()

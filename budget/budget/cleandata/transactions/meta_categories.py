@@ -3,6 +3,7 @@ Specifies a map between the regular categories and larger ones
 """
 
 META_CATEGORIES = {
+    "Business": "Bills",
     "Groceries": "Food",
     "Food Dining": "Food",
     "Fast Food": "Food",
@@ -14,6 +15,7 @@ META_CATEGORIES = {
     "Cash": "Transfer",
     "Interest Income": "Transfer",
     "Income": "Transfer",
+    "Fees": "Transfer",
     "Travel": "Travel",
     "Pharmacy": "Medical",
     "Eyecare": "Medical",

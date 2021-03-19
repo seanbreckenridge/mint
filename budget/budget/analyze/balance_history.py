@@ -57,21 +57,21 @@ def remove_outliers(
     df.drop(["at"], axis=1, inplace=True)
 
     # create sums for each snapshot
-    dates: np.array = np.array([d.timestamp() for d in df.index])
-    vals: np.array = np.array(df["sum"])
+    dates: np.ndarray = np.array([d.timestamp() for d in df.index])
+    vals: np.ndarray = np.array(df["sum"])
 
     # linear regression
     # y: money, x: dates
     slope, intercept, _, _, _ = stats.linregress(dates, vals)
 
     # calculate expected based on slope and intercept
-    regression_y: np.array = intercept + slope * dates
+    regression_y: np.ndarray = intercept + slope * dates
 
     # difference between expected and actual
-    residuals: np.array = vals - regression_y
-    residual_zscores: np.array = stats.zscore(residuals)
+    residuals: np.ndarray = vals - regression_y
+    residual_zscores: np.ndarray = stats.zscore(residuals)
     # get indices of items that are further than 1.5 deviations away
-    outlier_indices: np.array = next(iter(np.where(residual_zscores > 1.5)))
+    outlier_indices: np.ndarray = next(iter(np.where(residual_zscores > 1.5)))
 
     # remove those from dates/vals
     # dates_cleaned = np.delete(dates, outlier_indices)
@@ -108,11 +108,11 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
         chain(*[list(a[0]["account"].values) for a in acc_clean])
     )
     # create empty account data arrays for each timestamp
-    account_history: Dict[str, np.array] = {
+    account_history: Dict[str, np.ndarray] = {
         n: np.zeros(len(acc_clean)) for n in account_names
     }
 
-    secs: np.array = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
+    secs: np.ndarray = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]
 

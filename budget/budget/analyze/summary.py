@@ -135,11 +135,15 @@ def describe_spending(
     return sorted_transactions
 
 
-def recent_spending(transactions: List[Transaction]) -> pd.DataFrame:
+def recent_spending(
+    transactions: List[Transaction], include_transfers: bool = False
+) -> pd.DataFrame:
     _tr = pd.DataFrame.from_dict(transactions)
 
-    # remove transfers between accounts/income
-    spending = pd.DataFrame(_tr[_tr["meta_category"] != "Transfer"])
+    spending = _tr
+    # remove transfers between accounts/income, if specified
+    if not include_transfers:
+        spending = pd.DataFrame(_tr[_tr["meta_category"] != "Transfer"])
 
     all_time = spending
     last_year = _get_timeframe(spending, timedelta(days=365))

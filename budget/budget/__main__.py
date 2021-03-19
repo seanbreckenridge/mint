@@ -79,7 +79,13 @@ def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     is_flag=True,
     help="Print duplicate transactions that are removed",
 )
-def summary(repl: bool, debug: bool) -> None:
+@click.option(
+    "--include-transfers",
+    default=False,
+    is_flag=True,
+    help="Include items classified as transfers between accounts in summary",
+)
+def summary(repl: bool, debug: bool, include_transfers: bool) -> None:
     """
     Prints a summary of current accounts/recent transactions
     """
@@ -88,7 +94,7 @@ def summary(repl: bool, debug: bool) -> None:
 
     account_snapshots, transactions = data(debug=debug)
 
-    spend = recent_spending(transactions)
+    spend = recent_spending(transactions, include_transfers=include_transfers)
     acc = account_summary(account_snapshots)
 
     # sort by date

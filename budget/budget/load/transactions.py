@@ -1,3 +1,4 @@
+import sys
 import csv
 import io
 from datetime import date
@@ -92,4 +93,4 @@ def remove_duplicate_transactions(
             yield tr
         else:
             if debug:
-                print("removing transaction {}".format(tr))
+                print("removing transaction {}".format(tr), file=sys.stderr)

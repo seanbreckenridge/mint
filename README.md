@@ -18,7 +18,7 @@ For the `csv-export-setup` step of `./mint setup`, where `<THIS_DIR>` is the abs
 
 After `./mint fetch`, if the `./data` directory has untracked changes, it adds a commit to the local git repo, so that I never lose any of the data, when `plaid` stops returning old transactions.
 
-`./mint fetch` is run in the background once every few hours, using [`bgproc`](https://github.com/seanbreckenridge/bgproc/blob/master/personal_jobs/mint.job)
+I run `./mint fetch` is run in the background once [every few hours](https://github.com/seanbreckenridge/dotfiles/blob/master/.local/scripts/supervisor/jobs/linux/mint.job)
 
 ---
 

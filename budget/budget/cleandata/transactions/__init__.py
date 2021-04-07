@@ -3,6 +3,7 @@ Cleans/Maps transaction information to a nicer format
 """
 
 from typing import Callable, Tuple, Union, Iterable, Any
+from functools import lru_cache
 from ...load.transactions import Transaction
 
 # this is a weird hack to allow multi-line-ish lambda expressions
@@ -16,5 +17,6 @@ PredicateHandler = Tuple[bool, EditTransaction]
 Matcher = Callable[[Transaction], PredicateHandler]
 
 
+@lru_cache(maxsize=None)
 def desc(t: Transaction) -> str:
     return t.name.casefold()

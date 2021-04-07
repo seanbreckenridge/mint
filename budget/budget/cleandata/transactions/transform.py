@@ -148,7 +148,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "namecheap" in desc(t),
+        "namecheap" in desc(t) or "name-cheap" in desc(t),
         lambda: (
             setattr(t, "name", "NameCheap"),
             setattr(t, "category", "Technology"),

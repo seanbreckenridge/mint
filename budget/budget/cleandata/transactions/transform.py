@@ -213,6 +213,98 @@ def default_maps() -> Iterator[Matcher]:
             t,
         ),
     )
+    yield lambda t: (
+        "aws" == desc(t),
+        lambda: (
+            setattr(t, "category", "Business"),
+            t
+        )
+    )
+    yield lambda t: (
+        "fee for overdraft item" in desc(t),
+        lambda: (
+            setattr(t, "category", "Fees"),
+            t
+        )
+    )
+    yield lambda t: (
+        "fee for overdraft item" in desc(t),
+        lambda: (
+            setattr(t, "category", "Fees"),
+            t
+        )
+    )
+    yield lambda t: (
+        "chess.com" in desc(t),
+        lambda: (
+            setattr(t, "name", "chess.com"),
+            setattr(t, "category", "Entertainment"),
+            t
+        )
+    )
+    yield lambda t: (
+        "steamgames" in desc(t),
+        lambda: (
+            setattr(t, "name", "Steam"),
+            setattr(t, "category", "Entertainment"),
+            t
+        )
+    )
+    yield lambda t: (
+        "riot*" in desc(t),
+        lambda: (
+            setattr(t, "name", "Riot Games"),
+            setattr(t, "category", "Entertainment"),
+            t
+        )
+    )
+    yield lambda t: (
+        "cvs" == desc(t),
+        lambda: (
+            setattr(t, "category", "Pharmacy"),
+            t,
+        )
+    )
+    yield lambda t: (
+        "reddit" in desc(t),
+        lambda: (
+            setattr(t, "name", "Reddit"),
+            setattr(t, "category", "Entertainment"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "ebay" in desc(t),
+        lambda: (
+            setattr(t, "name", "eBay"),
+            setattr(t, "category", "Merchandise"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "motorola" in desc(t),
+        lambda: (
+            setattr(t, "name", "Motorola"),
+            setattr(t, "category", "Electronics"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "patreon" in desc(t),
+        lambda: (
+            setattr(t, "name", "Patreon"),
+            setattr(t, "category", "Subscriptions"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "trakt" in desc(t),
+        lambda: (
+            setattr(t, "name", "Trakt"),
+            setattr(t, "category", "Subscriptions"),
+            t,
+        ),
+    )
 
 
 @lru_cache(1)

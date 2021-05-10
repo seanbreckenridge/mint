@@ -48,6 +48,14 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
+        "ubiquiti inc." in desc(t),
+        lambda: (
+            setattr(t, "name", "Ubiquiti"),
+            setattr(t, "category", "Technology"),
+            t,
+        ),
+    )
+    yield lambda t: (
         "dreamhost" in desc(t),
         lambda: (setattr(t, "category", "Technology"), t),
     )
@@ -72,7 +80,7 @@ def default_maps() -> Iterator[Matcher]:
         ),
     )
     yield lambda t: (
-        "amazon" in desc(t) or "amzn mktp" in desc(t),
+        "amazon" in desc(t) or "amzn mktp" in desc(t) or "amzn digital" in desc(t),
         lambda: (setattr(t, "name", "Amazon"), setattr(t, "category", "Shopping"), t),
     )
     yield lambda t: (
@@ -213,57 +221,45 @@ def default_maps() -> Iterator[Matcher]:
             t,
         ),
     )
+    yield lambda t: ("aws" == desc(t), lambda: (setattr(t, "category", "Business"), t))
     yield lambda t: (
-        "aws" == desc(t),
-        lambda: (
-            setattr(t, "category", "Business"),
-            t
-        )
+        "fee for overdraft item" in desc(t),
+        lambda: (setattr(t, "category", "Fees"), t),
     )
     yield lambda t: (
         "fee for overdraft item" in desc(t),
-        lambda: (
-            setattr(t, "category", "Fees"),
-            t
-        )
-    )
-    yield lambda t: (
-        "fee for overdraft item" in desc(t),
-        lambda: (
-            setattr(t, "category", "Fees"),
-            t
-        )
+        lambda: (setattr(t, "category", "Fees"), t),
     )
     yield lambda t: (
         "chess.com" in desc(t),
         lambda: (
             setattr(t, "name", "chess.com"),
             setattr(t, "category", "Entertainment"),
-            t
-        )
+            t,
+        ),
     )
     yield lambda t: (
         "steamgames" in desc(t),
         lambda: (
             setattr(t, "name", "Steam"),
             setattr(t, "category", "Entertainment"),
-            t
-        )
+            t,
+        ),
     )
     yield lambda t: (
         "riot*" in desc(t),
         lambda: (
             setattr(t, "name", "Riot Games"),
             setattr(t, "category", "Entertainment"),
-            t
-        )
+            t,
+        ),
     )
     yield lambda t: (
         "cvs" == desc(t),
         lambda: (
             setattr(t, "category", "Pharmacy"),
             t,
-        )
+        ),
     )
     yield lambda t: (
         "reddit" in desc(t),
@@ -302,6 +298,14 @@ def default_maps() -> Iterator[Matcher]:
         lambda: (
             setattr(t, "name", "Trakt"),
             setattr(t, "category", "Subscriptions"),
+            t,
+        ),
+    )
+    yield lambda t: (
+        "discord" in desc(t) and "classic" in desc(t),
+        lambda: (
+            setattr(t, "name", "Discord"),
+            setattr(t, "category", "Entertainment"),
             t,
         ),
     )

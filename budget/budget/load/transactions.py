@@ -10,8 +10,8 @@ import git  # type: ignore[import]
 
 from ..log import logger
 
-
-@dataclass(unsafe_hash=True)  # so that this can be used in lru_cache while cleaning transactions
+# so that this can be used in lru_cache while cleaning transactions
+@dataclass(unsafe_hash=True)
 class Transaction:
     on: date
     amount: float  # positive is spending, negative is gaining/deposit

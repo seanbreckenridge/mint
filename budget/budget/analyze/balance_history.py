@@ -7,6 +7,7 @@ import numpy as np  # type: ignore[import]
 import pandas as pd  # type: ignore[import]
 import matplotlib.pyplot as plt  # type: ignore[import]
 import matplotlib.dates as mdate  # type: ignore[import]
+import matplotlib.ticker as tick  # type: ignore[import]
 from scipy import stats  # type: ignore[import]
 from tzlocal import get_localzone  # type: ignore[import]
 
@@ -124,7 +125,7 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
         ax.plot(secs, acc_list, label=acc)
 
     ax.xaxis.set_major_formatter(mdate.DateFormatter("%Y-%m-%d %H:%M:%S"))
-    ax.yaxis.set_major_formatter("${x:,}")
+    ax.yaxis.set_major_formatter(tick.StrMethodFormatter("${x:,}"))
     fig.autofmt_xdate()
 
     plt.legend(loc="upper left")

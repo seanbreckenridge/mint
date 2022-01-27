@@ -1,4 +1,4 @@
-from typing import Dict, Set, Tuple, List, cast
+from typing import Dict, Set, Tuple, List
 from datetime import datetime
 from itertools import chain
 
@@ -18,7 +18,9 @@ tz = get_localzone()
 
 # convert to timestamp and back to remove git timestamp info
 def fix_timestamp(t: datetime) -> datetime:
-    return cast(datetime, tz.localize(datetime.fromtimestamp(t.timestamp())))
+    dt = tz.localize(datetime.fromtimestamp(t.timestamp()))
+    assert isinstance(dt, datetime)
+    return dt
 
 
 def invert_credit_card(df_row):  # type: ignore
@@ -75,7 +77,7 @@ def remove_outliers(
     residuals: NDFloatArr = vals - regression_y
     residual_zscores: NDFloatArr = stats.zscore(residuals)
     # get indices of items that are further than 1.5 deviations away
-    outlier_indices: NDFloatArr = next(iter(np.where(residual_zscores > 1.5)))
+    outlier_indices: NDArray[np.int64] = next(iter(np.where(residual_zscores > 1.5)))
 
     # remove those from dates/vals
     # dates_cleaned = np.delete(dates, outlier_indices)

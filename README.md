@@ -12,11 +12,11 @@ Requires:
 
 I use [`plaid`](http://plaid.com/) to get the account information, and export those to local CSV files.
 
-`./mint setup` prompts me to setup any accounts, and sets up a git-tracked `./data` directory for my account balances/transactions.
+`./mint setup` prompts me to setup any accounts, and sets up a git-tracked data directory for my account balances/transactions.
 
-For the `csv-export-setup` step of `./mint setup`, where `<THIS_DIR>` is the absolute path to this repo on my file system; I enter: `<THIS_DIR>/data/transactions.csv` and `<THIS_DIR>/data/balances.csv`
+For the `csv-export-setup` step of `./mint setup`, where `<THIS_DIR>` is the absolute path to this repo on my file system; I enter: `/home/sean/data/mint/transactions.csv` and `/home/sean/data/mint/data/balances.csv`. Then, should set `MINT_DATA="${HOME}/data/mint"` to point the python code at that as your data source.
 
-After `./mint fetch`, if the `./data` directory has untracked changes, it adds a commit to the local git repo, so that I never lose any of the data, when `plaid` stops returning old transactions.
+After `./mint fetch`, if the data directory has untracked changes, it adds a commit to the local git repo, so that I never lose any of the data, when `plaid` stops returning old transactions.
 
 I run `./mint fetch` is run in the background once [every few hours](https://github.com/seanbreckenridge/dotfiles/blob/master/.local/scripts/supervisor/jobs/linux/mint.job)
 
@@ -42,7 +42,7 @@ This:
 
 ---
 
-To install as an editable package (so changes to the code immediately update):
+To install as an editable package (so changes to the code/filters/transforms immediately update):
 
 ```
 git clone https://github.com/seanbreckenridge/mint && cd ./mint/budget
@@ -64,11 +64,13 @@ Commands:
   summary      Prints a summary of current accounts/recent transactions
 ```
 
+Requires you to set the `MINT_DATA` environment variable to the git-tracked data directory (`./mint` defaults to using `./data`)
+
 Shorthands I add to my shell config:
 
 ```shell
 # (~/Repos/mint is where I keep the cloned dir)
-export MINT_DATA="${HOME}/Repos/mint/data"
+export MINT_DATA="${HOME}/data/mint"
 alias budget-history='python3 -m budget accounts --graph'
 # to edit the account/transaction map information
 alias 'budget-config=fd -IH conf.py --full-path $REPOS/mint | fzf | xargs -r -I {} editor {}'

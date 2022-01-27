@@ -25,4 +25,4 @@ jobs:
           pip install ./budget
       - name: Run mypy
         run: |
-          mypy ./budget/budget
+          mypy -p budget

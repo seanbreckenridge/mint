@@ -4,6 +4,7 @@ from itertools import chain
 
 import click
 import numpy as np  # type: ignore[import]
+from numpy.typing import NDArray
 import pandas as pd  # type: ignore[import]
 import matplotlib.pyplot as plt  # type: ignore[import]
 import matplotlib.dates as mdate  # type: ignore[import]
@@ -17,7 +18,9 @@ tz = get_localzone()
 
 # convert to timestamp and back to remove git timestamp info
 def fix_timestamp(t: datetime) -> datetime:
-    return tz.localize(datetime.fromtimestamp(t.timestamp()))
+    dt = tz.localize(datetime.fromtimestamp(t.timestamp()))
+    assert isinstance(dt, datetime)
+    return dt
 
 
 def invert_credit_card(df_row):  # type: ignore
@@ -36,6 +39,8 @@ def assets(s: Snapshot) -> pd.DataFrame:
 
 SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 
+
+NDFloatArr = NDArray[np.float64]
 
 def remove_outliers(
     account_snapshots: List[Snapshot], print: bool = True
@@ -58,21 +63,21 @@ def remove_outliers(
     df.drop(["at"], axis=1, inplace=True)
 
     # create sums for each snapshot
-    dates: np.ndarray = np.array([d.timestamp() for d in df.index])
-    vals: np.ndarray = np.array(df["sum"])
+    dates: NDFloatArr = np.array([d.timestamp() for d in df.index])
+    vals: NDFloatArr = np.array(df["sum"])
 
     # linear regression
     # y: money, x: dates
     slope, intercept, _, _, _ = stats.linregress(dates, vals)
 
     # calculate expected based on slope and intercept
-    regression_y: np.ndarray = intercept + slope * dates
+    regression_y: NDFloatArr = intercept + slope * dates
 
     # difference between expected and actual
-    residuals: np.ndarray = vals - regression_y
-    residual_zscores: np.ndarray = stats.zscore(residuals)
+    residuals: NDFloatArr = vals - regression_y
+    residual_zscores: NDFloatArr = stats.zscore(residuals)
     # get indices of items that are further than 1.5 deviations away
-    outlier_indices: np.ndarray = next(iter(np.where(residual_zscores > 1.5)))
+    outlier_indices: NDArray[np.int64] = next(iter(np.where(residual_zscores > 1.5)))
 
     # remove those from dates/vals
     # dates_cleaned = np.delete(dates, outlier_indices)
@@ -109,11 +114,11 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
         chain(*[list(a[0]["account"].values) for a in acc_clean])
     )
     # create empty account data arrays for each timestamp
-    account_history: Dict[str, np.ndarray] = {
+    account_history: Dict[str, NDFloatArr] = {
         n: np.zeros(len(acc_clean)) for n in account_names
     }
 
-    secs: np.ndarray = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
+    secs: NDFloatArr = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
     for i, sn in enumerate(acc_clean):
         ad: pd.DataFrame = sn[0]
 

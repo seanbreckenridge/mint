@@ -10,7 +10,8 @@ from datetime import datetime
 from dataclasses import dataclass
 from typing import Optional, List, Iterator, Set, Iterable, Tuple
 
-import git  # type: ignore[import]
+from git.objects.commit import Commit  # type: ignore[import]
+from git.repo.base import Repo  # type: ignore[import]
 from more_itertools import strip
 
 
@@ -46,7 +47,7 @@ BALANCES = "balances.csv"
 MANUAL_BALANCES = "manual_balances.csv"
 
 
-def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Account]:
+def get_accounts_at_commit(commit: Commit, filename: str) -> Iterator[Account]:
     try:
         blob = commit.tree / filename
     except KeyError:
@@ -68,7 +69,7 @@ def get_accounts_at_commit(commit: git.Commit, filename: str) -> Iterator[Accoun
         )
 
 
-def get_contents_at_commit(commit: git.Commit) -> Optional[Snapshot]:
+def get_contents_at_commit(commit: Commit) -> Optional[Snapshot]:
     account_data: List[Account] = []
     # read the balance/manual balance files for this snapshot
     for bfile in (BALANCES, MANUAL_BALANCES):
@@ -93,7 +94,7 @@ def unique_snapshots(snapshots: Iterable[Snapshot]) -> Iterator[Snapshot]:
 
 
 def generate_account_history(ddir: Path) -> Iterator[Snapshot]:
-    repo = git.Repo(str(ddir))
+    repo = Repo(str(ddir))
     yield from unique_snapshots(
         strip(map(get_contents_at_commit, repo.iter_commits()), lambda s: s is None)  # type: ignore
     )

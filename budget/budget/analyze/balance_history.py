@@ -1,4 +1,4 @@
-from typing import Dict, Set, Tuple, List
+from typing import Dict, Set, Tuple, List, cast
 from datetime import datetime
 from itertools import chain
 
@@ -18,7 +18,7 @@ tz = get_localzone()
 
 # convert to timestamp and back to remove git timestamp info
 def fix_timestamp(t: datetime) -> datetime:
-    return tz.localize(datetime.fromtimestamp(t.timestamp()))
+    return cast(datetime, tz.localize(datetime.fromtimestamp(t.timestamp())))
 
 
 def invert_credit_card(df_row):  # type: ignore

@@ -25,4 +25,4 @@ jobs:
           pip install ./budget
       - name: Run mypy
         run: |
-          mypy --install-types --non-interactive ./budget
+          mypy ./budget

@@ -1,6 +1,6 @@
 ## mint
 
-Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/). Used as part of [HPI](https://github.com/seanbreckenridge/HPI)
+Wrapper script/code to interact with [`mintable`](https://github.com/kevinschaich/mintable/). I use this as part of my personal [HPI](https://github.com/seanbreckenridge/HPI-personal) modules
 
 Requires:
 

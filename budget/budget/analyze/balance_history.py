@@ -42,6 +42,7 @@ SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 
 NDFloatArr = NDArray[np.float64]
 
+
 def remove_outliers(
     account_snapshots: List[Snapshot], print: bool = True
 ) -> SnapshotData:

@@ -34,7 +34,7 @@ set +e
 THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 readonly CONFIG_FILE="${THIS_DIR}/mintable.jsonc" # config file is kept in this dir
 declare DATA_DIR DEFUALT_DATA_DIR
-DEFAULT_DATA_DIR="${THIS_DIR}/data"              # where transactions/balances are kept
+DEFAULT_DATA_DIR="${THIS_DIR}/data" # where transactions/balances are kept
 DATA_DIR="${MINT_DATA:-${DEFAULT_DATA_DIR}}"
 readonly DATA_DIR
 

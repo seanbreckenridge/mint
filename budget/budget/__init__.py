@@ -1,4 +1,5 @@
 import os
+import logging
 
 from pathlib import Path
 from typing import Tuple, List, Optional
@@ -7,7 +8,6 @@ from .log import logger
 from .load.transactions import (
     Transaction,
     read_transactions,
-    remove_duplicate_transactions,
 )
 from .load.balances import generate_account_history, Snapshot
 
@@ -27,6 +27,11 @@ def data(
     ddir: Optional[Path] = None, debug: bool = False
 ) -> Tuple[List[Snapshot], List[Transaction]]:
 
+    if debug:
+        from .log import setup as log_setup
+
+        log_setup(level=logging.DEBUG)
+
     if ddir is None:
         ddir = get_data_dir()
 
@@ -43,11 +48,8 @@ def data(
         if tr.category in META_CATEGORIES:
             tr.meta_category = META_CATEGORIES[tr.category]
         else:
-            logger.warning(
+            logger.info(
                 "Couldn't find meta_category for {}: {}".format(tr.category, tr)
             )
-
-    # debug duplicates
-    transactions = list(remove_duplicate_transactions(transactions, debug=debug))
 
     return balance_snapshots, transactions

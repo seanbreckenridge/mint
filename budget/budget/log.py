@@ -1,12 +1,21 @@
-from os import environ
+import os
 import logging
+
+from typing import Optional
+
 from logzero import setup_logger  # type: ignore[import]
 
-# https://docs.python.org/3/library/logging.html#logging-levels
-loglevel: int = logging.WARNING  # (30)
-if "MINT_LOGS" in environ:
-    loglevel = int(environ["MINT_LOGS"])
+DEFAULT_LEVEL = logging.INFO
 
-# logzero handles this fine, can be imported/configured
-# multiple times
-logger = setup_logger(name="budget", level=loglevel)
+# global access to the logger
+logger: logging.Logger
+
+
+def setup(level: Optional[int] = None) -> logging.Logger:
+    chosen_level = level or int(os.environ.get("MINT_LOGS", DEFAULT_LEVEL))
+    lgr: logging.Logger = setup_logger(name=__package__, level=chosen_level)
+    return lgr
+
+
+# runs the first time this file is run, setup can be imported/run multiple times in other places
+logger = setup()

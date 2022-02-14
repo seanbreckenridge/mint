@@ -5,7 +5,7 @@ from typing import Optional
 
 from logzero import setup_logger  # type: ignore[import]
 
-DEFAULT_LEVEL = logging.INFO
+DEFAULT_LEVEL = logging.WARNING
 
 # global access to the logger
 logger: logging.Logger

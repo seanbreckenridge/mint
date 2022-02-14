@@ -7,6 +7,7 @@ requirements = [
     "more-itertools",
     "gitpython",
     "pick",
+    "textdistance",
     "pyfiglet",
     "pandas",
     "tabulate",

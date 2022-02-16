@@ -28,6 +28,7 @@ setup(
     license="MIT",
     packages=find_packages(include=["budget"]),
     install_requires=requirements,
+    entry_points={"console_scripts": ["budget = budget.__main__:main"]},
     keywords="money finances data",
     classifiers=[
         "License :: OSI Approved :: MIT License",

@@ -5,7 +5,8 @@ import click
 import pandas as pd  # type: ignore[import]
 from pyfiglet import figlet_format  # type: ignore[import]
 
-from .. import Transaction, Snapshot
+from ..load.balances import Snapshot
+from ..load.transactions import Transaction
 
 
 def banner(msg: str) -> None:

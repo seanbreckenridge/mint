@@ -7,7 +7,9 @@ from datetime import datetime
 
 import pandas as pd  # type: ignore[import]
 
-from .. import data, Transaction, Snapshot
+from .. import data
+from ..load.balances import Snapshot
+from ..load.transactions import Transaction
 from .balance_history import remove_outliers, SnapshotData
 
 

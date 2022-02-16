@@ -1,19 +1,11 @@
 import os
-import logging
 
 from pathlib import Path
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, TYPE_CHECKING
 
-from .log import logger
-from .load.transactions import (
-    Transaction,
-    read_transactions,
-)
-from .load.balances import generate_account_history, Snapshot
-
-from .cleandata.accounts.fix_account_names import clean_data  # type: ignore
-from .cleandata.transactions.transform import transform_all as transform  # type: ignore
-from .cleandata.transactions.meta_categories import META_CATEGORIES  # type: ignore
+if TYPE_CHECKING:
+    from .load.transactions import Transaction
+    from .load.balances import Snapshot
 
 
 def get_data_dir() -> Path:
@@ -25,7 +17,18 @@ def get_data_dir() -> Path:
 
 def data(
     ddir: Optional[Path] = None, debug: bool = False
-) -> Tuple[List[Snapshot], List[Transaction]]:
+) -> Tuple[List["Snapshot"], List["Transaction"]]:
+    import logging
+    from .log import logger
+
+    from .load.transactions import (
+        read_transactions,
+    )
+    from .load.balances import generate_account_history
+
+    from .cleandata.accounts.fix_account_names import clean_data
+    from .cleandata.transactions.transform import transform_all as transform  # type: ignore[attr-defined]
+    from .cleandata.transactions.meta_categories import META_CATEGORIES
 
     if debug:
         from .log import setup as log_setup

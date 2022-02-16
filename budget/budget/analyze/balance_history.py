@@ -12,7 +12,7 @@ import matplotlib.ticker as tick  # type: ignore[import]
 from scipy import stats  # type: ignore[import]
 from tzlocal import get_localzone  # type: ignore[import]
 
-from .. import Snapshot
+from ..load.balances import Snapshot
 
 tz = get_localzone()
 

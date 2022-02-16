@@ -2,9 +2,6 @@ import sys
 
 import click
 
-from . import data, get_data_dir
-from .manual import edit_manual_balances
-
 
 @click.group()
 def main() -> None:
@@ -19,6 +16,9 @@ def edit_manual() -> None:
     """
     Edit the manual balances file
     """
+    from . import get_data_dir
+    from .manual import edit_manual_balances
+
     ddir = get_data_dir()
     assert ddir.is_dir() and ddir.exists()
 
@@ -43,7 +43,7 @@ def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     """
     Show a summary/graph of the current/past accounts balances
     """
-
+    from . import data
     from .analyze.balance_history import graph_account_balances
 
     if graph:
@@ -90,6 +90,7 @@ def summary(repl: bool, debug: bool, include_transfers: bool) -> None:
     Prints a summary of current accounts/recent transactions
     """
 
+    from . import data
     from .analyze.summary import recent_spending, account_summary
 
     account_snapshots, transactions = data(debug=debug)

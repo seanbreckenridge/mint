@@ -47,23 +47,24 @@ def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
     from .analyze.balance_history import graph_account_balances
 
     if graph:
-        account_snapshots, _ = data(debug=debug)
-        account_snapshots.sort(key=lambda s: s.at)
-        graph_account_balances(account_snapshots, graph)
-        sys.exit(0)
-    if repl or df:
-        import IPython  # type: ignore[import]
-        from .analyze import cleaned_snapshots, cleaned_snapshots_df
+        try:
+            account_snapshots, _ = data(debug=debug)
+            account_snapshots.sort(key=lambda s: s.at)
+            graph_account_balances(account_snapshots, graph)
+        except ModuleNotFoundError as m:
+            click.echo(str(m), err=True)
+            sys.exit(1)
+    import IPython  # type: ignore[import]
+    from .analyze import cleaned_snapshots, cleaned_snapshots_df
 
-        click.secho("Use 'snapshots' to interact with data", fg="green")
-        if df:
-            snapshots = cleaned_snapshots_df()
-        else:
-            # TODO(sean): fix timestamp
-            snapshots = list(cleaned_snapshots())  # type: ignore[assignment,arg-type]
-        IPython.embed()
-        sys.exit(0)
-    click.echo("(No Flag Provided)")
+    click.secho("Use 'snapshots' to interact with data", fg="green")
+    if df:
+        snapshots = cleaned_snapshots_df()
+    else:
+        # TODO(sean): fix timestamp
+        snapshots = list(cleaned_snapshots())  # type: ignore[assignment,arg-type]
+    IPython.embed()
+    sys.exit(0)
 
 
 @main.command()

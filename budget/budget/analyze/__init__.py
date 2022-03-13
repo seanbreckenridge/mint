@@ -10,7 +10,7 @@ import pandas as pd  # type: ignore[import]
 from .. import data
 from ..load.balances import Snapshot
 from ..load.transactions import Transaction
-from .balance_history import remove_outliers, SnapshotData
+from .balance_history import remove_outliers, SnapshotData, _to_snapshot_data
 
 
 def cleaned_snapshots(
@@ -40,7 +40,7 @@ def cleaned_snapshots_df(
         snapshots.sort(key=lambda s: s.at)
     else:
         snapshots = sorted_snapshots
-    cleaned_acc: SnapshotData = remove_outliers(snapshots, print=debug)
+    cleaned_acc: SnapshotData = remove_outliers(_to_snapshot_data(snapshots), print=debug)
     return cleaned_acc
 
 

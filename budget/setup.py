@@ -1,22 +1,7 @@
+from pathlib import Path
 from setuptools import setup, find_packages  # type: ignore[import]
 
-requirements = [
-    "logzero",
-    "click",
-    "IPython",
-    "more-itertools",
-    "gitpython",
-    "pick",
-    "textdistance",
-    "pyfiglet",
-    "pandas",
-    "tabulate",
-    "vimbuffer>=0.1.3",
-    "scipy",
-    "numpy",
-    "matplotlib",
-    "tzlocal",
-]
+reqs = Path("requirements.txt").read_text().splitlines()
 
 setup(
     name="budget",
@@ -27,9 +12,15 @@ setup(
     description=("""code to interact with/visualize mintable exports"""),
     license="MIT",
     packages=find_packages(include=["budget"]),
-    install_requires=requirements,
+    install_requires=reqs,
     entry_points={"console_scripts": ["budget = budget.__main__:main"]},
     keywords="money finances data",
+    extras_require={
+        "graphs": [
+            "scipy",
+            "matplotlib",
+        ],
+    },
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",

@@ -6,10 +6,6 @@ import click
 import numpy as np  # type: ignore[import]
 from numpy.typing import NDArray
 import pandas as pd  # type: ignore[import]
-import matplotlib.pyplot as plt  # type: ignore[import]
-import matplotlib.dates as mdate  # type: ignore[import]
-import matplotlib.ticker as tick  # type: ignore[import]
-from scipy import stats  # type: ignore[import]
 from tzlocal import get_localzone  # type: ignore[import]
 
 from ..load.balances import Snapshot
@@ -34,7 +30,7 @@ def assets(s: Snapshot) -> pd.DataFrame:
 
     df = pd.DataFrame.from_dict(s.accounts)
     # invert credit card balances
-    return df.apply(invert_credit_card, axis=1)
+    return df.apply(invert_credit_card, axis=1)  # type: ignore
 
 
 SnapshotData = List[Tuple[pd.DataFrame, datetime]]
@@ -43,18 +39,21 @@ SnapshotData = List[Tuple[pd.DataFrame, datetime]]
 NDFloatArr = NDArray[np.float64]
 
 
-def remove_outliers(
-    account_snapshots: List[Snapshot], print: bool = True
-) -> SnapshotData:
+def remove_outliers(acc_data: SnapshotData, print: bool = True) -> SnapshotData:
     """
     remove outlier snapshots (ones that might have happened while
     transfers were happening between different accounts)
     """
 
+    try:
+        from scipy import stats  # type: ignore[import]
+    except ModuleNotFoundError as m:
+        click.echo(f"Could not import scipy {m}")
+        return acc_data
+
     if print:
-        click.echo("Processing {} snapshots...".format(len(account_snapshots)))
+        click.echo("Processing {} snapshots...".format(len(acc_data)))
     # get data
-    acc_data: SnapshotData = [(assets(s), s.at) for s in account_snapshots]
     df: pd.DataFrame = pd.DataFrame.from_dict(
         [{"sum": d[0]["current"].sum(), "at": d[1]} for d in acc_data]
     )
@@ -97,14 +96,23 @@ def remove_outliers(
         )
     return acc_clean
 
+def  _to_snapshot_data(snapshots: List[Snapshot]) -> SnapshotData:
+    return [(assets(s), s.at) for s in snapshots]
+
+
 
 def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> None:
     """
     plot each account across the git hitsory
     """
 
+    import matplotlib.pyplot as plt  # type: ignore[import]
+    import matplotlib.dates as mdate  # type: ignore[import]
+    import matplotlib.ticker as tick  # type: ignore[import]
+
+    acc_data: SnapshotData = _to_snapshot_data(account_snapshots)
     # clean data
-    acc_clean: SnapshotData = remove_outliers(account_snapshots)
+    acc_data = remove_outliers(acc_data)
 
     plt.style.use("dark_background")
     # graph each data point
@@ -112,15 +120,15 @@ def graph_account_balances(account_snapshots: List[Snapshot], graph: bool) -> No
 
     # get all account names
     account_names: Set[str] = set(
-        chain(*[list(a[0]["account"].values) for a in acc_clean])
+        chain(*[list(a[0]["account"].values) for a in acc_data])
     )
     # create empty account data arrays for each timestamp
     account_history: Dict[str, NDFloatArr] = {
-        n: np.zeros(len(acc_clean)) for n in account_names
+        n: np.zeros(len(acc_data)) for n in account_names
     }
 
-    secs: NDFloatArr = np.array([fix_timestamp(sn[1]) for sn in acc_clean])
-    for i, sn in enumerate(acc_clean):
+    secs: NDFloatArr = np.array([fix_timestamp(sn[1]) for sn in acc_data])
+    for i, sn in enumerate(acc_data):
         ad: pd.DataFrame = sn[0]
 
         # loop over rows and add to account_history, to create 'line graphs' for each item

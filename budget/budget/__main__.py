@@ -54,17 +54,18 @@ def accounts(graph: bool, repl: bool, df: bool, debug: bool) -> None:
         except ModuleNotFoundError as m:
             click.echo(str(m), err=True)
             sys.exit(1)
-    import IPython  # type: ignore[import]
-    from .analyze import cleaned_snapshots, cleaned_snapshots_df
-
-    click.secho("Use 'snapshots' to interact with data", fg="green")
-    if df:
-        snapshots = cleaned_snapshots_df()
     else:
-        # TODO(sean): fix timestamp
-        snapshots = list(cleaned_snapshots())  # type: ignore[assignment,arg-type]
-    IPython.embed()
-    sys.exit(0)
+        import IPython  # type: ignore[import]
+        from .analyze import cleaned_snapshots, cleaned_snapshots_df
+
+        click.secho("Use 'snapshots' to interact with data", fg="green")
+        if df:
+            snapshots = cleaned_snapshots_df()
+        else:
+            # TODO(sean): fix timestamp
+            snapshots = list(cleaned_snapshots())  # type: ignore[assignment,arg-type]
+        IPython.embed()
+        sys.exit(0)
 
 
 @main.command()
